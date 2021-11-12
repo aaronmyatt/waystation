@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+declare preview='bat --color=always --style=header,numbers -H {2} {1} | rg --color=always -C3 {q}'
+
+rg --glob="$1" --pretty --column -n --no-heading "$2" 2> /dev/null |
+fzf -d : \
+--multi \
+--ansi \
+--phony \
+--bind="change:reload:rg --glob="$1" -n --color=always {q}" \
+--bind='enter:execute:micro {1}:{2}:{3}' \
+--bind='ctrl-s:execute:way mark {1}:{2}:{3}' \
+--bind='ctrl-w:execute:way list | less' \
+--bind='ctrl-f:execute:irg {1} {q}' \
+--preview="[[ -n {1} ]] && $preview"

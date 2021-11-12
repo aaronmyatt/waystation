@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+declare preview='bat --color=always --style=header,numbers -H {2} {1} | rg --color=always -C3 {q}'
+
+rg --pretty --column -n --no-heading "$1" 2> /dev/null |
+fzf -d : \
+--multi \
+--ansi \
+--query="$1" \
+--phony \
+--bind="change:reload:rg -n --color=always {q}" \
+# --bind='enter:execute:micro +{2}:{3} {1}' \
+--bind='ctrl-s:execute:waystation mark {+f}' \
+# --bind='ctrl-e:execute:> ~/.waystation/current' \
+--bind='ctrl-w:execute:waystation list' \
+--preview="[[ -n {1} ]] && $preview"
