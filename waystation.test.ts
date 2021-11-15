@@ -6,7 +6,6 @@ import {
   assertExists,
   assertNotEquals,
   assertStringIncludes,
-  assertThrows,
 } from "https://deno.land/std@0.111.0/testing/asserts.ts";
 import Waystation, { EmptyWaystation } from "./waystation.ts";
 
