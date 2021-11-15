@@ -84,9 +84,15 @@ async function writeWaystationToFS(
   waystation: IWaystation,
   path = CURRENT_FILE_PATH,
 ): Promise<IWaystation> {
-  const newRawFile = JSON.stringify(waystation);
-  await Deno.writeTextFile(path, newRawFile);
-  return waystation;
+  try {
+    const newRawFile = JSON.stringify(waystation);
+    await Deno.writeTextFile(path, newRawFile);
+    return waystation;
+  } catch {
+    await Deno.mkdir(WAYSTATION_CONFIG_DIRECTORY);
+    return await writeWaystationToFS(waystation, path);
+  }
+  
 }
 
 async function writeCurrentToFS(waystation: IWaystation) {
