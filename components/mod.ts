@@ -18,26 +18,25 @@ const tableTitle = (title: string): Row => {
   return new Row(new Cell(title));
 };
 
-async function renderRecentWaystationList(){
+async function renderRecentWaystationList() {
   const recentWaystations = await readRecentWaystations();
-  console.log(recentWaystations);
-  const stationNames = recentWaystations.map(waystation => {
+  const stationNames = recentWaystations.map((waystation) => {
     return new Row(new Cell(waystation.name || waystation.id));
-  })
-  return new Table().body(stationNames)
+  });
+  return new Table().body(stationNames);
 }
 
-function renderWaystation(waystation: IWaystation){
+function renderWaystation(waystation: IWaystation) {
   return new Table(
     waystation.name && new Row("Current Waystation") || new Row(""),
     tableTitle(waystation.name || "Current Waystation"),
     new Row(""),
     new Row("Marks:"),
     ...waystation.marks.map((mark, index) => {
-      return new Row(new Cell(`#${index+1} ${mark.name || mark.id}`))
+      return new Row(new Cell(`#${index + 1} ${mark.name || mark.id}`));
     }),
     new Row(""),
-    tableTitle("Recent Stations:")
+    tableTitle("Recent Stations:"),
   );
 }
 
@@ -156,4 +155,12 @@ async function markEditor(
 //   return context;
 // };
 
-export { renderWaystation, markEditor, markSelector, markTable, markTableWithTitle, renderMark, renderRecentWaystationList };
+export {
+  markEditor,
+  markSelector,
+  markTable,
+  markTableWithTitle,
+  renderMark,
+  renderRecentWaystationList,
+  renderWaystation,
+};

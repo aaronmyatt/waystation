@@ -1,9 +1,10 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
 
+import { readWaystationFromFS as readWaystation } from "./utils/mod.ts";
 import {
-  readWaystationFromFS as readWaystation
-} from "./utils/mod.ts";
-import { renderWaystation, renderRecentWaystationList } from "./components/mod.ts";
+  renderRecentWaystationList,
+  renderWaystation,
+} from "./components/mod.ts";
 
 import {
   listCommand,
@@ -21,7 +22,7 @@ import {
       const waystation = await readWaystation();
       const table = renderWaystation(waystation);
       table.render();
-      renderRecentWaystationList().then(table => table.render());
+      renderRecentWaystationList().then((table) => table.render());
     })
     .command("new", await newCommand())
     .command("n", await newCommand())
