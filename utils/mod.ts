@@ -6,61 +6,70 @@ const USER_OS_HOME = Deno.env.get("HOME");
 const WAYSTATION_CONFIG_DIRECTORY = `${USER_OS_HOME}/.waystation`;
 const CURRENT_FILE_PATH = `${WAYSTATION_CONFIG_DIRECTORY}/current.json`;
 
-
-async function* configFiles (dirPath=WAYSTATION_CONFIG_DIRECTORY){
+async function* configFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
   for await (const dirEntry of Deno.readDir(dirPath)) {
     yield dirEntry;
   }
 }
 
-async function* backupFiles (dirPath=WAYSTATION_CONFIG_DIRECTORY){
+async function* backupFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
   for await (const dirEntry of configFiles(dirPath)) {
-    if(dirEntry.name.includes('current')) continue;
+    if (dirEntry.name.includes("current")) continue;
     yield dirEntry;
   }
 }
 
-async function recentlyEditedBackupFiles (dirPath=WAYSTATION_CONFIG_DIRECTORY){
+async function recentlyEditedBackupFiles(
+  dirPath = WAYSTATION_CONFIG_DIRECTORY,
+) {
   const backupFilesArray = [];
-  for await (const backupFile of backupFiles(dirPath)) backupFilesArray.push(backupFile)
+  for await (const backupFile of backupFiles(dirPath)) {
+    backupFilesArray.push(backupFile);
+  }
   const recentFiles = await Promise.all(backupFilesArray
-    .map(async entry => {
+    .map(async (entry) => {
       const realPath = path.join(WAYSTATION_CONFIG_DIRECTORY, entry.name);
       return {
         path: realPath,
         entry,
-        fileInfo: await Deno.lstat(realPath)
-      }
-    }))
-  
-  recentFiles
-    .sort((a,b) => {
+        fileInfo: await Deno.lstat(realPath),
+      };
+    }));
 
+  recentFiles
+    .sort((a, b) => {
       // force unmodified files to the back of the queue
       const first = new Date(a.fileInfo.mtime || 0);
       const second = new Date(b.fileInfo.mtime || 0);
 
       // sort descending, latest first
       return second.valueOf() - first.valueOf();
-    })
+    });
 
-  const rawRecentFiles = await Promise.all(recentFiles.slice(0, 10)
-    .map(async (file) => await Deno.readTextFile(file.path)))
-    
-  return rawRecentFiles.map((rawFile: string) => rawFile)
+  const rawRecentFiles = await Promise.all(
+    recentFiles.slice(0, 10)
+      .map(async (file) => await Deno.readTextFile(file.path)),
+  );
+
+  return rawRecentFiles.map((rawFile: string) => rawFile);
 }
 
 async function readRecentWaystations(): Promise<IWaystation[]> {
-  const rawWaystations = await recentlyEditedBackupFiles();
-  return rawWaystations.map((rawFile: string) => {
-    try {
-      return JSON.parse(rawFile)
-    } catch {
-      console.log("Skipping none JSON file.")
-    }
-  })
+  try {
+    const rawWaystations = await recentlyEditedBackupFiles();
+    return rawWaystations.map((rawFile: string) => {
+      try {
+        return JSON.parse(rawFile);
+      } catch {
+        console.log("Skipping none JSON file.");
+      }
+    });
+  } catch {
+    // likely the first time running Waystation
+    // no prior Waystation's presents
+    return [];
+  }
 }
-
 
 async function readWaystationFromFS(): Promise<IWaystation> {
   try {
@@ -73,20 +82,26 @@ async function readWaystationFromFS(): Promise<IWaystation> {
 
 async function writeWaystationToFS(
   waystation: IWaystation,
-  path=CURRENT_FILE_PATH,
+  path = CURRENT_FILE_PATH,
 ): Promise<IWaystation> {
   const newRawFile = JSON.stringify(waystation);
   await Deno.writeTextFile(path, newRawFile);
   return waystation;
 }
 
-async function writeCurrentToFS(waystation: IWaystation){
+async function writeCurrentToFS(waystation: IWaystation) {
   return await writeWaystationToFS(waystation, CURRENT_FILE_PATH);
 }
 
-async function writeBackupToFS(waystation: IWaystation){
-  const backupPath = path.join(WAYSTATION_CONFIG_DIRECTORY, waystation.id)
+async function writeBackupToFS(waystation: IWaystation) {
+  const backupPath = path.join(WAYSTATION_CONFIG_DIRECTORY, waystation.id);
   return await writeWaystationToFS(waystation, backupPath);
 }
 
-export { readWaystationFromFS, writeWaystationToFS, writeCurrentToFS, writeBackupToFS, readRecentWaystations };
+export {
+  readRecentWaystations,
+  readWaystationFromFS,
+  writeBackupToFS,
+  writeCurrentToFS,
+  writeWaystationToFS,
+};
