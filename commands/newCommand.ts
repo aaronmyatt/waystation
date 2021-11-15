@@ -14,8 +14,8 @@ export default async function newCommand() {
     .description(
       "Create and name a new Waystation, overwriting the current Waystation",
     )
-    .action((_, name: string) => {
-      writeBackupToFS(waystation);
+    .action(async (_, name: string) => {
+      await writeBackupToFS(waystation);
       waystation = Waystation(name);
       console.dir(waystation);
       writeCurrentToFS(waystation);
