@@ -15,8 +15,15 @@ import { markEditor, renderMark } from "../components/mod.ts";
 async function defaultWalkCommand() {
   let index = 0;
   let waystation = await readWaystation();
+  const hasMarks = waystation.marks.length > 0;
 
-  while (true) {
+  if (!hasMarks) {
+    console.log("No marks found.");
+    console.log("Use: waystion m '/a/path/of/interst:1'");
+    console.log("To add new marks to the current Waystation");
+  }
+
+  while (hasMarks) {
     const mark = waystation.marks[index];
     console.log(ansi.cursorTo(0, 0).eraseDown());
     console.log(

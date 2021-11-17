@@ -92,7 +92,6 @@ async function writeWaystationToFS(
     await Deno.mkdir(WAYSTATION_CONFIG_DIRECTORY);
     return await writeWaystationToFS(waystation, path);
   }
-  
 }
 
 async function writeCurrentToFS(waystation: IWaystation) {
