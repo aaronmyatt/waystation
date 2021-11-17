@@ -99,12 +99,16 @@ async function markEditor(
   waystation: IWaystation,
   mark: IMark,
 ): Promise<IWaystation> {
+  const forbiddenKeys = ["id", "resources"];
+
   const property: string = await Select.prompt({
     message: "Pick a property",
     search: true,
-    options: Object.keys(EmptyMark).map((key) => {
-      return { name: key, value: key };
-    }),
+    options: Object.keys(EmptyMark)
+      .filter((key) => !forbiddenKeys.includes(key.toLowerCase()))
+      .map((key) => {
+        return { name: key, value: key };
+      }),
   });
 
   const editorProcess = Deno.run({
