@@ -84,8 +84,6 @@ async function markSelector(waystation: IWaystation) {
     return { name: table.toString(), value: mark.id };
   });
 
-  if(!options.length) return;
-
   const userSelectedMarkId: string = await Select.prompt({
     message: "Pick a Mark",
     options,
