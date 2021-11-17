@@ -79,12 +79,16 @@ function markTableWithTitle(waystation: IWaystation, title: string) {
 }
 
 async function markSelector(waystation: IWaystation) {
+  const options = waystation.marks.map((mark) => {
+    const table = renderMark(mark);
+    return { name: table.toString(), value: mark.id };
+  });
+
+  if(!options.length) return;
+
   const userSelectedMarkId: string = await Select.prompt({
     message: "Pick a Mark",
-    options: waystation.marks.map((mark) => {
-      const table = renderMark(mark);
-      return { name: table.toString(), value: mark.id };
-    }),
+    options,
   });
 
   const selectedMark = waystation.marks.find((mark) =>
