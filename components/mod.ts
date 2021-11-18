@@ -33,7 +33,7 @@ function renderWaystation(waystation: IWaystation) {
     new Row(""),
     new Row("Marks:"),
     ...waystation.marks.map((mark, index) => {
-      return new Row(new Cell(`#${index + 1} ${mark.name || mark.id}`));
+      return new Row(new Cell(`#${index + 1} ${mark.name || mark.path || mark.id}`));
     }),
     new Row(""),
     tableTitle("Recent Stations:"),
