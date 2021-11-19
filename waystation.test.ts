@@ -179,5 +179,14 @@ Deno.test("return mark path with path/col appended", () => {
   waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
   assert(waystation.marks.length === 1);
   const path = Waystation.markWithPath(waystation.marks[0]);
-  assert(path === PATH_WITH_LINE_AND_COLUMN);
+  assert(path.endsWith(PATH_WITH_LINE_AND_COLUMN));
+});
+
+Deno.test("returns last mark in list", () => {
+  let waystation = Waystation();
+  waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
+  waystation = Waystation.newMark(waystation, BASIC_PATH);
+  assert(waystation.marks.length === 2);
+  const mark = Waystation.lastMark(waystation);
+  assert(mark!.path.endsWith(BASIC_PATH));
 });

@@ -190,6 +190,11 @@ Waystation.removeMarkByIndex = (
 };
 
 Waystation.markWithPath = (mark: IMark): string => {
-  const parts = [mark.path, mark.line || 0, mark.column || 0]
-  return parts.join(':')
-}
+  const parts = [mark.path, mark.line || 0, mark.column || 0];
+  return parts.join(":");
+};
+
+Waystation.lastMark = (waystation: IWaystation): IMark | undefined => {
+  const length = waystation.marks.length;
+  if (length > 0) return waystation.marks[length - 1];
+};
