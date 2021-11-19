@@ -1,4 +1,5 @@
 import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
+import { readLines } from "https://deno.land/std@0.113.0/io/mod.ts";
 
 import Waystation from "../waystation.ts";
 

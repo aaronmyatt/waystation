@@ -6,8 +6,6 @@ import {
 import { colors } from "https://deno.land/x/cliffy@v0.20.0/ansi/colors.ts";
 import { Select } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 
-// import { readLines } from "https://deno.land/std@0.113.0/io/mod.ts";
-
 import Waystation, { EmptyMark } from "../waystation.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
 
