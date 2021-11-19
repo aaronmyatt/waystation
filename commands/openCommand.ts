@@ -12,7 +12,7 @@ export default function openCommand() {
       const backups = await readRecentWaystations(undefined);
       const newWaystation = await stationSelector(backups);
       if(newWaystation){
-        writeCurrentToFS(waystation);
+        writeCurrentToFS(newWaystation);
         console.log('Updated current active Waystation');
       }
       writeBackupToFS(waystation);
