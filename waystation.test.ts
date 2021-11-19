@@ -190,3 +190,14 @@ Deno.test("returns last mark in list", () => {
   const mark = Waystation.lastMark(waystation);
   assert(mark!.path.endsWith(BASIC_PATH));
 });
+
+Deno.test("adds note type resource to mark", () => {
+  const RESOURCE_TEXT = "some text";
+  let waystation = Waystation();
+  waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
+  const mark = Waystation.lastMark(waystation)
+  waystation = Waystation.newResource(waystation, mark!, 'note', RESOURCE_TEXT)
+  const updatedMark = Waystation.lastMark(waystation);
+  assert(updatedMark!.resources!.length > 0);
+  assertEquals(updatedMark!.resources![0].body, RESOURCE_TEXT);
+});
