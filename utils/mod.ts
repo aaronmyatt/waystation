@@ -135,7 +135,6 @@ async function pathContext(
   let context = "";
 
   for await (const line of readLines(fileReader)) {
-    if (index <= (target + range)) return context;
     if (index > (target - range) && index <= (target + range)) {
       context = context.concat(line + "\n");
     }

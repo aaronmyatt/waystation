@@ -4,14 +4,22 @@ import Waystation from "../waystation.ts";
 import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
+  pathContext,
 } from "../utils/mod.ts";
 
 async function defaultMarkCommand(_options: unknown, path: string) {
   let waystation = await readWaystation();
   if (path) {
     waystation = Waystation.newMark(waystation, path);
+    await writeWaystation(waystation);
+    const mark = Waystation.lastMark(waystation);
+    if(mark){
+      const context = await pathContext(mark.path, mark.line || 0);
+      console.log(context);
+      waystation = Waystation.newResource(waystation, mark, "note", context, "File Context")
+      writeWaystation(waystation)
+    }
     console.dir(waystation);
-    writeWaystation(waystation);
   }
 }
 
