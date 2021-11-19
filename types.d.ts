@@ -15,11 +15,13 @@ interface IMark {
   resources?: readonly IResource[];
 }
 
+type ResourceTypes = "url" | "mark" | "note" | "path";
+
 interface IResource {
-  type: "url" | "mark" | "note" | "path";
+  type: ResourceTypes;
   id: string;
-  title?: string;
-  description?: string;
+  name?: string;
+  body?: string;
 }
 
 interface IWaystationConfiguration {
