@@ -33,7 +33,7 @@ async function defaultWalkCommand() {
     table.render();
     console.log(
       colors.black.bgWhite(
-        ` Edit:e  Move Up:p  Move Down:n  Cycle Marks:space `,
+        ` edit:e  up:p  down:n  next:space `,
       ),
     );
 

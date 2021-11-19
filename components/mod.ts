@@ -33,24 +33,24 @@ function renderWaystation(waystation: IWaystation) {
     new Row(""),
     new Row("Marks:"),
     ...waystation.marks.map((mark, index) => {
-      return new Row(new Cell(`#${index + 1} ${mark.name || mark.path || mark.id}`));
+      return new Row(new Cell(`#${index + 1} ${mark.name || Waystation.markWithPath(mark) || mark.id}`));
     }),
     new Row(""),
     tableTitle("Recent Stations:"),
   );
 }
 
-function renderMark({ id, path, name, body }: IMark): Table {
+function renderMark(mark: IMark): Table {
   return new Table(
     new Row(new Cell("")),
     new Row(
-      new Cell(`${(path || id)}
-${colors.bold.underline.green(name || "Add a short descriptive name")}`),
+      new Cell(`${(Waystation.markWithPath(mark) || mark.id)}
+${colors.bold.underline.green(mark.name || "Add a short descriptive name")}`),
     ),
     new Row(
       new Cell(
         colors.blue(
-          body ||
+          mark.body ||
             "Describe what this mark is and/or what should be done with it.",
         ),
       ).border(true),
@@ -153,6 +153,7 @@ async function markEditor(
 //   let context = "";
 
 //   for await (const line of readLines(fileReader)) {
+//     if(index <= (target + range)) return context;
 //     if (index > (target - range) && index <= (target + range)) {
 //       context = context.concat(line + "\n");
 //     }

@@ -173,3 +173,11 @@ Deno.test("remove mark by index", () => {
   waystation = Waystation.removeMarkByIndex(waystation, 0);
   assert(waystation.marks.length === 0);
 });
+
+Deno.test("return mark path with path/col appended", () => {
+  let waystation = Waystation();
+  waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
+  assert(waystation.marks.length === 1);
+  const path = Waystation.markWithPath(waystation.marks[0]);
+  assert(path === PATH_WITH_LINE_AND_COLUMN);
+});
