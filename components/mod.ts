@@ -122,46 +122,6 @@ async function markEditor(
   return Waystation.editMark(waystation, index, property, change);
 }
 
-// Very challenging to get the code snippet highlighted.
-// I tried:
-// - https://deno.land/x/speed_highlight_js@1.0.0
-// - Running `bat` as a subprocess and catching the output
-// Also looked at: https://deno.land/x/hue@0.0.0-alpha.1
-// but hue is even more limited than `speed_highlight_js`
-
-// const syntaxHighlightedContext = async (
-//   path: string,
-//   target: number,
-//   range = 3,
-// ) => {
-//   const context = await pathContext(path, target, range);
-//   const syntaxHighlightedContext = await Deno.run({
-//     cmd: ["bat", "-f", "-lts", context],
-//     stderr: 'piped', stdout: 'piped'
-//   }).output();
-
-//   return new TextDecoder().decode(syntaxHighlightedContext);
-// };
-
-// async function pathContext(
-//   path: string,
-//   target: number,
-//   range = 3,
-// ): Promise<string> {
-//   const fileReader = await Deno.open(path);
-//   let index = 0;
-//   let context = "";
-
-//   for await (const line of readLines(fileReader)) {
-//     if(index <= (target + range)) return context;
-//     if (index > (target - range) && index <= (target + range)) {
-//       context = context.concat(line + "\n");
-//     }
-//     index++
-//   }
-//   return context;
-// };
-
 export {
   markEditor,
   markSelector,
