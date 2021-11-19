@@ -1,6 +1,6 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
 
-import Waystation from "../waystation.ts";
+import Waystation from "../core/waystation.ts";
 import {
   readWaystationFromFS as readWaystation,
   writeBackupToFS,

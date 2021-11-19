@@ -6,7 +6,7 @@ import {
 import { colors } from "https://deno.land/x/cliffy@v0.20.0/ansi/colors.ts";
 import { Select } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 
-import Waystation, { EmptyMark } from "../waystation.ts";
+import Waystation, { EmptyMark } from "../core/waystation.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
 
 const tableTitle = (title: string): Row => {

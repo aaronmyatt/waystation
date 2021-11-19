@@ -1,10 +1,10 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
 
-import Waystation from "../waystation.ts";
+import Waystation from "../core/waystation.ts";
 import {
+  pathContext,
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
-  pathContext,
 } from "../utils/mod.ts";
 
 async function defaultMarkCommand(_options: unknown, path: string) {
@@ -13,11 +13,17 @@ async function defaultMarkCommand(_options: unknown, path: string) {
     waystation = Waystation.newMark(waystation, path);
     await writeWaystation(waystation);
     const mark = Waystation.lastMark(waystation);
-    if(mark){
+    if (mark) {
       const context = await pathContext(mark.path, mark.line || 0);
       console.log(context);
-      waystation = Waystation.newResource(waystation, mark, "note", context, "File Context")
-      writeWaystation(waystation)
+      waystation = Waystation.newResource(
+        waystation,
+        mark,
+        "note",
+        context,
+        "File Context",
+      );
+      writeWaystation(waystation);
     }
     console.dir(waystation);
   }

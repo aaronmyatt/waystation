@@ -5,7 +5,7 @@ import {
 } from "https://deno.land/x/cliffy@v0.20.0/keypress/mod.ts";
 import { ansi, colors } from "https://deno.land/x/cliffy@v0.20.0/ansi/mod.ts";
 
-import Waystation from "../waystation.ts";
+import Waystation from "../core/waystation.ts";
 import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,

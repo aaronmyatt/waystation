@@ -1,4 +1,4 @@
-/// <reference types="./types.d.ts" />
+/// <reference types="../types.d.ts" />
 
 import {
   assert,
@@ -111,7 +111,12 @@ Deno.test("replace marks", () => {
 Deno.test("edit marks", () => {
   let waystation = Waystation();
   waystation = Waystation.newMark(waystation, BASIC_PATH);
-  waystation = Waystation.editMark(waystation, waystation.marks[0], "body", "very descriptive");
+  waystation = Waystation.editMark(
+    waystation,
+    waystation.marks[0],
+    "body",
+    "very descriptive",
+  );
   assertEquals(waystation.marks[0].body, "very descriptive");
 });
 
@@ -195,8 +200,8 @@ Deno.test("adds note type resource to mark", () => {
   const RESOURCE_TEXT = "some text";
   let waystation = Waystation();
   waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
-  const mark = Waystation.lastMark(waystation)
-  waystation = Waystation.newResource(waystation, mark!, 'note', RESOURCE_TEXT)
+  const mark = Waystation.lastMark(waystation);
+  waystation = Waystation.newResource(waystation, mark!, "note", RESOURCE_TEXT);
   const updatedMark = Waystation.lastMark(waystation);
   assert(updatedMark!.resources!.length > 0);
   assertEquals(updatedMark!.resources![0].body, RESOURCE_TEXT);

@@ -1,7 +1,7 @@
 import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
 import { readLines } from "https://deno.land/std@0.113.0/io/mod.ts";
 
-import Waystation from "../waystation.ts";
+import Waystation from "../core/waystation.ts";
 
 const USER_OS_HOME = Deno.env.get("HOME");
 const WAYSTATION_CONFIG_DIRECTORY = `${USER_OS_HOME}/.waystation`;

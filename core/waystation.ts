@@ -1,4 +1,4 @@
-/// <reference types="./types.d.ts" />
+/// <reference types="../types.d.ts" />
 
 import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
 
@@ -6,7 +6,7 @@ import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
 // core of Waystatin "clean" with no reliance no IO so that it could
 // packaged into a browser compatible module
 const _fullPath = (filename: string) => path.join(Deno.cwd(), filename);
-const _generateUniqueId = () => crypto.randomUUID()
+const _generateUniqueId = () => crypto.randomUUID();
 
 const DEFAULT_DIR = "~/.waystation/";
 const FILE_PATH_REGEX =
@@ -34,8 +34,8 @@ const EmptyResource: IResource = {
   type: "mark",
   id: "",
   name: "",
-  body: ""
-}
+  body: "",
+};
 
 export default function Waystation(name?: string): IWaystation {
   return Object.freeze({
@@ -207,25 +207,31 @@ Waystation.lastMark = (waystation: IWaystation): IMark | undefined => {
   if (length > 0) return waystation.marks[length - 1];
 };
 
-function makeResource(type: ResourceTypes, body: string, name=""): IResource {
+function makeResource(type: ResourceTypes, body: string, name = ""): IResource {
   return {
     ...EmptyResource,
     id: _generateUniqueId(),
     type,
     name,
     body,
-  }
+  };
 }
 
-Waystation.newResource = (waystation: IWaystation, mark: IMark, type: ResourceTypes, body: string, name = ""): IWaystation => {
+Waystation.newResource = (
+  waystation: IWaystation,
+  mark: IMark,
+  type: ResourceTypes,
+  body: string,
+  name = "",
+): IWaystation => {
   const resource = makeResource(type, body, name);
   const updatedMark = {
     ...mark,
     resources: [
       ...mark.resources || [],
       resource,
-    ]
-  }
-  const index = waystation.marks.findIndex(oldMark => oldMark.id === mark.id);
-  return Waystation.replaceMark(waystation, index, updatedMark)
-}
+    ],
+  };
+  const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
+  return Waystation.replaceMark(waystation, index, updatedMark);
+};
