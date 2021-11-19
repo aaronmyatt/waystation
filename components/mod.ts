@@ -122,8 +122,7 @@ async function markEditor(
   await editorProcess.status();
 
   const change = await Deno.readTextFile("/tmp/way1");
-  const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
-  return Waystation.editMark(waystation, index, property, change);
+  return Waystation.editMark(waystation, mark, property, change);
 }
 
 export {

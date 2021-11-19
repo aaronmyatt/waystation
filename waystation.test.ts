@@ -111,8 +111,8 @@ Deno.test("replace marks", () => {
 Deno.test("edit marks", () => {
   let waystation = Waystation();
   waystation = Waystation.newMark(waystation, BASIC_PATH);
-  waystation = Waystation.editMark(waystation, 0, "body", "very descriptive");
-  assert(waystation.marks[0].body === "very descriptive");
+  waystation = Waystation.editMark(waystation, waystation.marks[0], "body", "very descriptive");
+  assertEquals(waystation.marks[0].body, "very descriptive");
 });
 
 /*

@@ -90,15 +90,15 @@ Waystation.replaceMark = (
 
 Waystation.editMark = (
   waystation: IWaystation,
-  index: number,
+  mark: IMark,
   property: string,
   change: unknown,
 ): IWaystation => {
-  const mark = waystation.marks[index];
   const newMark = {
     ...mark,
     [property]: change,
   };
+  const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   return Waystation.replaceMark(waystation, index, newMark);
 };
 
