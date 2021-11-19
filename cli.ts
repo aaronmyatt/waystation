@@ -11,6 +11,7 @@ import {
   markCommand,
   newCommand,
   walkCommand,
+  openCommand
 } from "./commands/mod.ts";
 
 (async function () {
@@ -32,5 +33,7 @@ import {
     .command("l", await listCommand())
     .command("walk", await walkCommand())
     .command("w", await walkCommand())
+    .command("open", await openCommand())
+    .command("o", await openCommand())
     .parse(Deno.args);
 })();
