@@ -125,6 +125,22 @@ async function markEditor(
   return Waystation.editMark(waystation, mark, property, change);
 }
 
+async function stationSelector(waystations: IWaystation[]) {
+  const options = waystations.map((station) => {
+    return { name: station.name, value: station.id };
+  });
+
+  const userSelectedStationId: string = await Select.prompt({
+    message: "Pick a Station",
+    options,
+  });
+
+  const selectedStation = waystations.find((station) =>
+    station.id === userSelectedStationId
+  );
+  return selectedStation;
+}
+
 export {
   markEditor,
   markSelector,
@@ -133,4 +149,5 @@ export {
   renderMark,
   renderRecentWaystationList,
   renderWaystation,
+  stationSelector
 };
