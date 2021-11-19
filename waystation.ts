@@ -38,7 +38,7 @@ export default function Waystation(name?: string): IWaystation {
 }
 
 Waystation.addMark = (waystation: IWaystation, mark: IMark): IWaystation => {
-  const marks: readonly IMark[] = Object.freeze([mark, ...waystation.marks]);
+  const marks: readonly IMark[] = Object.freeze([...waystation.marks, mark]);
   const newWaystation = {
     ...waystation,
     marks,
