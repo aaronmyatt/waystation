@@ -49,11 +49,11 @@ function renderMark(mark: IMark): Table {
     new Row(new Cell("")),
     new Row(
       new Cell(`${(Waystation.markWithPath(mark) || mark.id)}
-${colors.bold.underline.green(mark.name || "Add a short descriptive name")}`),
+${colors.bold.green(mark.name || "Add a short descriptive name")}`),
     ),
     new Row(
       new Cell(
-        colors.blue(
+        colors.bold(
           mark.body ||
             "Describe what this mark is and/or what should be done with it.",
         ),
