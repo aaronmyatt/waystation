@@ -1,16 +1,10 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
-import {
-  keypress,
-  KeyPressEvent,
-} from "https://deno.land/x/cliffy@v0.20.0/keypress/mod.ts";
-import { ansi } from "https://deno.land/x/cliffy@v0.20.0/ansi/mod.ts";
 
 import Waystation from "../waystation.ts";
 import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
-import { markEditor, markSelector, renderMark } from "../components/mod.ts";
 
 async function defaultMarkCommand(_options: unknown, path: string) {
   let waystation = await readWaystation();
@@ -18,33 +12,6 @@ async function defaultMarkCommand(_options: unknown, path: string) {
     waystation = Waystation.newMark(waystation, path);
     console.dir(waystation);
     writeWaystation(waystation);
-  } else {
-    while (true) {
-      const mark = await markSelector(waystation);
-      if (mark) {
-        console.log("Press any key to go back.");
-        const press: KeyPressEvent = await keypress();
-        if (press.key === "e") {
-          waystation = await markEditor(waystation, mark);
-          writeWaystation(waystation);
-        }
-
-        if (press.key === "p") {
-          waystation = Waystation.moveMarkUp(waystation, mark);
-          writeWaystation(waystation);
-        }
-
-        if (press.key === "n") {
-          waystation = Waystation.moveMarkDown(waystation, mark);
-          writeWaystation(waystation);
-        }
-
-        if (press.key === "enter") {
-          console.log(ansi.clearScreen());
-          renderMark(mark).render();
-        }
-      }
-    }
   }
 }
 
