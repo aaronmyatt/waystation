@@ -22,6 +22,7 @@ async function* backupFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
 
 async function recentlyEditedBackupFiles(
   dirPath = WAYSTATION_CONFIG_DIRECTORY,
+  count=10
 ) {
   const backupFilesArray = [];
   for await (const backupFile of backupFiles(dirPath)) {
@@ -48,16 +49,16 @@ async function recentlyEditedBackupFiles(
     });
 
   const rawRecentFiles = await Promise.all(
-    recentFiles.slice(0, 10)
+    recentFiles.slice(0, count)
       .map(async (file) => await Deno.readTextFile(file.path)),
   );
 
   return rawRecentFiles.map((rawFile: string) => rawFile);
 }
 
-async function readRecentWaystations(): Promise<IWaystation[]> {
+async function readRecentWaystations(count=10): Promise<IWaystation[]> {
   try {
-    const rawWaystations = await recentlyEditedBackupFiles();
+    const rawWaystations = await recentlyEditedBackupFiles(WAYSTATION_CONFIG_DIRECTORY, count);
     return rawWaystations.map((rawFile: string) => {
       try {
         return JSON.parse(rawFile);
