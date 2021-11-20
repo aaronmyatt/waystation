@@ -103,6 +103,7 @@ async function markEditor(
   waystation: IWaystation,
   mark: IMark,
 ): Promise<IWaystation> {
+  const EDITOR = Deno.env.get('EDITOR') || 'nano';
   const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
   const forbiddenKeys = ["id", "resources"];
 
@@ -119,7 +120,7 @@ async function markEditor(
   await Deno.writeTextFile(TEMP_FILE, String(mark[property]));
 
   const editorProcess = Deno.run({
-    cmd: ["micro", TEMP_FILE],
+    cmd: [EDITOR, TEMP_FILE],
   });
 
   await editorProcess.status();
