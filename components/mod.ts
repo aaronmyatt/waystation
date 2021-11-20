@@ -6,7 +6,7 @@ import {
 import { colors } from "https://deno.land/x/cliffy@v0.20.0/ansi/colors.ts";
 import { Select } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 
-import Waystation, { EmptyMark } from "../core/waystation.ts";
+import Waystation from "../core/waystation.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
 
 const tableTitle = (title: string): Row => {
@@ -103,25 +103,29 @@ async function markEditor(
   waystation: IWaystation,
   mark: IMark,
 ): Promise<IWaystation> {
+  const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
   const forbiddenKeys = ["id", "resources"];
 
-  const property: string = await Select.prompt({
+  const property = await Select.prompt({
     message: "Pick a property",
     search: true,
-    options: Object.keys(EmptyMark)
+    options: Object.keys(mark)
       .filter((key) => !forbiddenKeys.includes(key.toLowerCase()))
       .map((key) => {
         return { name: key, value: key };
       }),
-  });
+  }) as "name" | "body" |"path" | "line" | "column";
+
+  await Deno.writeTextFile(TEMP_FILE, String(mark[property]));
 
   const editorProcess = Deno.run({
-    cmd: ["micro", "/tmp/way1"],
+    cmd: ["micro", TEMP_FILE],
   });
 
   await editorProcess.status();
 
-  const change = await Deno.readTextFile("/tmp/way1");
+  const change = await Deno.readTextFile(TEMP_FILE);
+  Deno.remove(TEMP_FILE);
   return Waystation.editMark(waystation, mark, property, change);
 }
 
