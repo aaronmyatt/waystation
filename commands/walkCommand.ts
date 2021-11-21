@@ -32,9 +32,7 @@ async function defaultWalkCommand() {
     const table = renderMark(mark);
     table.render();
     console.log(
-      colors.black.bgWhite(
-        ` edit:e  up:p  down:n  next:space `,
-      ),
+      ` edit:${colors.bold('e')}  up:${colors.bold('p')}  down:${colors.bold('n')}  next:${colors.bold('space')} `
     );
 
     const press: KeyPressEvent = await keypress();
