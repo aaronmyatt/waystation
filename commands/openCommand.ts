@@ -1,6 +1,11 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
-import { readRecentWaystations, readWaystationFromFS, writeCurrentToFS, writeBackupToFS } from '../utils/mod.ts';
-import { stationSelector } from '../components/mod.ts';
+import {
+  readRecentWaystations,
+  readWaystationFromFS,
+  writeBackupToFS,
+  writeCurrentToFS,
+} from "../utils/mod.ts";
+import { stationSelector } from "../components/mod.ts";
 
 export default function openCommand() {
   return new Command()
@@ -11,9 +16,9 @@ export default function openCommand() {
       const waystation = await readWaystationFromFS();
       const backups = await readRecentWaystations(undefined);
       const newWaystation = await stationSelector(backups);
-      if(newWaystation){
+      if (newWaystation) {
         writeCurrentToFS(newWaystation);
-        console.log('Updated current active Waystation');
+        console.log("Updated current Waystation");
       }
       writeBackupToFS(waystation);
     });

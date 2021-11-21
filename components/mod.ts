@@ -103,7 +103,7 @@ async function markEditor(
   waystation: IWaystation,
   mark: IMark,
 ): Promise<IWaystation> {
-  const EDITOR = Deno.env.get('EDITOR') || 'nano';
+  const EDITOR = Deno.env.get("EDITOR") || "nano";
   const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
   const forbiddenKeys = ["id", "resources"];
 
@@ -115,7 +115,7 @@ async function markEditor(
       .map((key) => {
         return { name: key, value: key };
       }),
-  }) as "name" | "body" |"path" | "line" | "column";
+  }) as "name" | "body" | "path" | "line" | "column";
 
   await Deno.writeTextFile(TEMP_FILE, String(mark[property]));
 
@@ -154,5 +154,5 @@ export {
   renderMark,
   renderRecentWaystationList,
   renderWaystation,
-  stationSelector
+  stationSelector,
 };

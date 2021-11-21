@@ -10,8 +10,8 @@ import {
   listCommand,
   markCommand,
   newCommand,
+  openCommand,
   walkCommand,
-  openCommand
 } from "./commands/mod.ts";
 
 (async function () {
