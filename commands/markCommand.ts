@@ -1,8 +1,10 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
+import { Input } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 
 import Waystation from "../core/waystation.ts";
 import {
   pathContext,
+  projectFiles,
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
@@ -15,7 +17,6 @@ async function defaultMarkCommand(_options: unknown, path: string) {
     const mark = Waystation.lastMark(waystation);
     if (mark) {
       const context = await pathContext(mark.path, mark.line || 0);
-      console.log(context);
       waystation = Waystation.newResource(
         waystation,
         mark,
@@ -26,6 +27,24 @@ async function defaultMarkCommand(_options: unknown, path: string) {
       writeWaystation(waystation);
     }
     console.dir(waystation);
+  } else {
+    const files = await projectFiles();
+    const name = await Input.prompt({
+      message: "Name this mark",
+    });
+    console.log(`Name: ${name}`)
+    const file = await Input.prompt({
+      message: "Attach a file path to this mark",
+      suggestions: files.map((file) => file.path),
+      list: true,
+      info: true,
+    });
+    waystation = Waystation.newMark(waystation, file);
+    const mark = Waystation.lastMark(waystation);
+    if(mark){
+      waystation = Waystation.editMark(waystation, mark, 'name', name)
+    }
+    writeWaystation(waystation);
   }
 }
 
