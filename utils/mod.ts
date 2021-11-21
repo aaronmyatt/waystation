@@ -1,11 +1,29 @@
 import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
 import { readLines } from "https://deno.land/std@0.113.0/io/mod.ts";
+import { walk } from "https://deno.land/std@0.115.1/fs/mod.ts";
 
 import Waystation from "../core/waystation.ts";
 
 const USER_OS_HOME = Deno.env.get("HOME");
 const WAYSTATION_CONFIG_DIRECTORY = `${USER_OS_HOME}/.waystation`;
 const CURRENT_FILE_PATH = `${WAYSTATION_CONFIG_DIRECTORY}/current.json`;
+
+async function projectFiles() {
+  const files = [];
+  try {
+    // if not run at the top level of a git project
+    // we bail early.
+    await Deno.lstat(".git");
+    for await (
+      const entry of walk(".", { includeDirs: false, skip: [/git/] })
+    ) {
+      files.push(entry);
+    }
+    return files;
+  } catch {
+    return files;
+  }
+}
 
 async function* configFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
   for await (const dirEntry of Deno.readDir(dirPath)) {
@@ -22,7 +40,7 @@ async function* backupFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
 
 async function recentlyEditedBackupFiles(
   dirPath = WAYSTATION_CONFIG_DIRECTORY,
-  count=10
+  count = 10,
 ) {
   const backupFilesArray = [];
   for await (const backupFile of backupFiles(dirPath)) {
@@ -56,9 +74,12 @@ async function recentlyEditedBackupFiles(
   return rawRecentFiles.map((rawFile: string) => rawFile);
 }
 
-async function readRecentWaystations(count=10): Promise<IWaystation[]> {
+async function readRecentWaystations(count = 10): Promise<IWaystation[]> {
   try {
-    const rawWaystations = await recentlyEditedBackupFiles(WAYSTATION_CONFIG_DIRECTORY, count);
+    const rawWaystations = await recentlyEditedBackupFiles(
+      WAYSTATION_CONFIG_DIRECTORY,
+      count,
+    );
     return rawWaystations.map((rawFile: string) => {
       try {
         return JSON.parse(rawFile);
@@ -146,6 +167,7 @@ async function pathContext(
 
 export {
   pathContext,
+  projectFiles,
   readRecentWaystations,
   readWaystationFromFS,
   writeBackupToFS,
