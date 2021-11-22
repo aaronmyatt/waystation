@@ -130,6 +130,22 @@ async function markEditor(
   return Waystation.editMark(waystation, mark, property, change);
 }
 
+function renderResource(resource: IResource): Table {
+  return new Table(
+    new Row(new Cell("")),
+    new Row(
+      new Cell(`${colors.brightBlue(resource.type)}:  ${resource.name || resource.id}`)
+    ),
+    new Row(
+      new Cell(
+        colors.bold(
+          resource.body || ""
+        ),
+      ),
+    ),
+  );
+}
+
 async function stationSelector(waystations: IWaystation[]) {
   const options = waystations.map((station) => {
     return { name: station.name, value: station.id };
@@ -147,6 +163,7 @@ async function stationSelector(waystations: IWaystation[]) {
 }
 
 export {
+  renderResource,
   markEditor,
   markSelector,
   markTable,
