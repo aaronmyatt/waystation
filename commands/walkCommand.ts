@@ -10,7 +10,7 @@ import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
-import { markEditor, renderMark } from "../components/mod.ts";
+import { markEditor, renderMark, renderResource } from "../components/mod.ts";
 
 async function defaultWalkCommand() {
   let index = 0;
@@ -34,6 +34,11 @@ async function defaultWalkCommand() {
     console.log(
       ` edit:${colors.bold('e')}  up:${colors.bold('p')}  down:${colors.bold('n')}  next:${colors.bold('space')} `
     );
+    mark.resources && mark.resources.map(resource => {
+      const table = renderResource(resource);
+      table.render();
+    })
+
 
     const press: KeyPressEvent = await keypress();
 
