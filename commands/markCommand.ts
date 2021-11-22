@@ -19,7 +19,7 @@ async function defaultMarkCommand(_options: unknown, path: string) {
     const name = await Input.prompt({
       message: "Name this mark",
     });
-    console.log(`Name: ${name}`)
+    console.log(`Name: ${name}`);
     const file = await Input.prompt({
       message: "Attach a file path to this mark",
       suggestions: files.map((file) => file.path),
@@ -28,8 +28,8 @@ async function defaultMarkCommand(_options: unknown, path: string) {
     });
     waystation = Waystation.newMark(waystation, file);
     const mark = Waystation.lastMark(waystation);
-    if(mark){
-      waystation = Waystation.editMark(waystation, mark, 'name', name)
+    if (mark) {
+      waystation = Waystation.editMark(waystation, mark, "name", name);
     }
   }
   const mark = Waystation.lastMark(waystation);

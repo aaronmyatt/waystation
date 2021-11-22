@@ -32,13 +32,14 @@ async function defaultWalkCommand() {
     const table = renderMark(mark);
     table.render();
     console.log(
-      ` edit:${colors.bold('e')}  up:${colors.bold('p')}  down:${colors.bold('n')}  next:${colors.bold('space')} `
+      ` edit:${colors.bold("e")}  up:${colors.bold("p")}  down:${
+        colors.bold("n")
+      }  next:${colors.bold("space")} `,
     );
-    mark.resources && mark.resources.map(resource => {
+    mark.resources && mark.resources.map((resource) => {
       const table = renderResource(resource);
       table.render();
-    })
-
+    });
 
     const press: KeyPressEvent = await keypress();
 
