@@ -9,17 +9,22 @@ import {
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
 
-async function defaultMarkCommand(_options: unknown, path: string) {
+async function defaultMarkCommand(
+  options: Record<string, string>,
+  path: string,
+  name: string,
+) {
+  let markName: string = options.name || name;
   let waystation = await readWaystation();
   if (path) {
     waystation = Waystation.newMark(waystation, path);
     await writeWaystation(waystation);
   } else {
     const files = await projectFiles();
-    const name = await Input.prompt({
+    markName = await Input.prompt({
       message: "Name this mark",
     });
-    console.log(`Name: ${name}`);
+    console.log(`Name: ${markName}`);
     const file = await Input.prompt({
       message: "Attach a file path to this mark",
       suggestions: files.map((file) => file.path),
@@ -27,12 +32,11 @@ async function defaultMarkCommand(_options: unknown, path: string) {
       info: true,
     });
     waystation = Waystation.newMark(waystation, file);
-    const mark = Waystation.lastMark(waystation);
-    if (mark) {
-      waystation = Waystation.editMark(waystation, mark, "name", name);
-    }
   }
   const mark = Waystation.lastMark(waystation);
+  if ((markName && !!mark)) {
+    waystation = Waystation.editMark(waystation, mark, "name", markName);
+  }
   if (mark) {
     const context = await pathContext(mark.path, mark.line || 0);
     waystation = Waystation.newResource(
@@ -52,7 +56,7 @@ async function removeMarkCommand() {
   return new Command()
     .arguments("<index:number>")
     .description("Remove a mark")
-    .action((_, index: number) => {
+    .action((_, index = 0) => {
       waystation = Waystation.removeMarkByIndex(waystation, Number(index));
       writeWaystation(waystation);
     });
@@ -80,10 +84,11 @@ async function orderMarkCommand() {
 
 export default async function markCommand() {
   return new Command()
-    .arguments("[path:string]")
+    .arguments("[path:string] [name:string]")
     .description(
       "Mark any file, folder or url and save to the current Waystation",
     )
+    .option("-n, --name <name>", "mark name")
     .action(defaultMarkCommand)
     .command("remove", await removeMarkCommand())
     .command("order", await orderMarkCommand());
