@@ -225,10 +225,13 @@ Waystation.newResource = (
   name = "",
 ): IWaystation => {
   const resource = makeResource(type, body, name);
+  const oldMark = waystation.marks.find((oldMark) => oldMark.id === mark.id);
+  if (!oldMark) return waystation;
+
   const updatedMark = {
-    ...mark,
+    ...oldMark,
     resources: [
-      ...mark.resources || [],
+      ...oldMark?.resources || [],
       resource,
     ],
   };
