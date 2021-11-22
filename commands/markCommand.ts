@@ -14,19 +14,6 @@ async function defaultMarkCommand(_options: unknown, path: string) {
   if (path) {
     waystation = Waystation.newMark(waystation, path);
     await writeWaystation(waystation);
-    const mark = Waystation.lastMark(waystation);
-    if (mark) {
-      const context = await pathContext(mark.path, mark.line || 0);
-      waystation = Waystation.newResource(
-        waystation,
-        mark,
-        "note",
-        context,
-        "File Context",
-      );
-      writeWaystation(waystation);
-    }
-    console.dir(waystation);
   } else {
     const files = await projectFiles();
     const name = await Input.prompt({
@@ -44,8 +31,20 @@ async function defaultMarkCommand(_options: unknown, path: string) {
     if(mark){
       waystation = Waystation.editMark(waystation, mark, 'name', name)
     }
-    writeWaystation(waystation);
   }
+  const mark = Waystation.lastMark(waystation);
+  if (mark) {
+    const context = await pathContext(mark.path, mark.line || 0);
+    waystation = Waystation.newResource(
+      waystation,
+      mark,
+      "note",
+      context,
+      "File Context",
+    );
+  }
+  console.dir(waystation);
+  writeWaystation(waystation);
 }
 
 async function removeMarkCommand() {
@@ -54,7 +53,7 @@ async function removeMarkCommand() {
     .arguments("<index:number>")
     .description("Remove a mark")
     .action((_, index: number) => {
-      waystation = Waystation.removeMarkByIndex(waystation, index);
+      waystation = Waystation.removeMarkByIndex(waystation, Number(index));
       writeWaystation(waystation);
     });
 }
