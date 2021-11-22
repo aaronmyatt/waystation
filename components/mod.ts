@@ -125,7 +125,7 @@ async function markEditor(
 
   await editorProcess.status();
 
-  const change = await Deno.readTextFile(TEMP_FILE);
+  const change = await Deno.readTextFile(TEMP_FILE).then((text) => text.trim());
   Deno.remove(TEMP_FILE);
   return Waystation.editMark(waystation, mark, property, change);
 }
@@ -134,12 +134,14 @@ function renderResource(resource: IResource): Table {
   return new Table(
     new Row(new Cell("")),
     new Row(
-      new Cell(`${colors.brightBlue(resource.type)}:  ${resource.name || resource.id}`)
+      new Cell(
+        `${colors.brightBlue(resource.type)}:  ${resource.name || resource.id}`,
+      ),
     ),
     new Row(
       new Cell(
         colors.bold(
-          resource.body || ""
+          resource.body || "",
         ),
       ),
     ),
@@ -163,13 +165,13 @@ async function stationSelector(waystations: IWaystation[]) {
 }
 
 export {
-  renderResource,
   markEditor,
   markSelector,
   markTable,
   markTableWithTitle,
   renderMark,
   renderRecentWaystationList,
+  renderResource,
   renderWaystation,
   stationSelector,
 };
