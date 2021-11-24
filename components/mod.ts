@@ -8,6 +8,7 @@ import { Select } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 
 import Waystation from "../core/waystation.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
+import markComponents from "./mark.ts";
 
 const EDITOR = Deno.env.get("EDITOR") || "nano";
 
@@ -135,7 +136,7 @@ async function markPathEditor(mark: IMark): Promise<void> {
   const editorProcess = Deno.run({
     cmd: [EDITOR, `${mark.path}:${mark.line}`],
   });
-  
+
   await editorProcess.status();
 }
 
@@ -174,6 +175,7 @@ async function stationSelector(waystations: IWaystation[]) {
 }
 
 export {
+  markComponents,
   markEditor,
   markPathEditor,
   markSelector,

@@ -10,7 +10,12 @@ import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
-import { markPathEditor, markEditor, renderMark, renderResource } from "../components/mod.ts";
+import {
+  markEditor,
+  markPathEditor,
+  renderMark,
+  renderResource,
+} from "../components/mod.ts";
 
 async function defaultWalkCommand() {
   let index = 0;
