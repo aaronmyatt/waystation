@@ -10,7 +10,7 @@ import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
-import { markEditor, renderMark, renderResource } from "../components/mod.ts";
+import { markPathEditor, markEditor, renderMark, renderResource } from "../components/mod.ts";
 
 async function defaultWalkCommand() {
   let index = 0;
@@ -45,6 +45,11 @@ async function defaultWalkCommand() {
 
     if (press.ctrlKey && press.key === "c") {
       Deno.exit();
+    }
+
+    if (press.shiftKey && press.key === "e") {
+      await markPathEditor(mark);
+      continue;
     }
 
     if (press.key === "e") {
