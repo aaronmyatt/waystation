@@ -1,7 +1,7 @@
 import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
 
 import { readWaystationFromFS as readWaystation } from "../utils/mod.ts";
-import { markSelector } from "../components/mod.ts";
+import { markComponents, markSelector } from "../components/mod.ts";
 
 export default function listCommand() {
   return new Command()
@@ -19,7 +19,8 @@ export default function listCommand() {
       }
 
       while (hasMarks) {
-        await markSelector(waystation);
+        const mark = await markSelector(waystation);
+        await markComponents.renderMarkWalk(waystation, mark);
       }
     });
 }

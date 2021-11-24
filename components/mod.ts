@@ -175,7 +175,7 @@ async function stationSelector(waystations: IWaystation[]) {
 }
 
 export {
-  markComponents,
+  markComponents as markComponents,
   markEditor,
   markPathEditor,
   markSelector,
