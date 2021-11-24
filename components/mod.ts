@@ -9,6 +9,8 @@ import { Select } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 import Waystation from "../core/waystation.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
 
+const EDITOR = Deno.env.get("EDITOR") || "nano";
+
 const tableTitle = (title: string): Row => {
   title = colors.bold.underline.yellow(
     title,
@@ -103,7 +105,6 @@ async function markEditor(
   waystation: IWaystation,
   mark: IMark,
 ): Promise<IWaystation> {
-  const EDITOR = Deno.env.get("EDITOR") || "nano";
   const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
   const forbiddenKeys = ["id", "resources"];
 
@@ -128,6 +129,14 @@ async function markEditor(
   const change = await Deno.readTextFile(TEMP_FILE).then((text) => text.trim());
   Deno.remove(TEMP_FILE);
   return Waystation.editMark(waystation, mark, property, change);
+}
+
+async function markPathEditor(mark: IMark): Promise<void> {
+  const editorProcess = Deno.run({
+    cmd: [EDITOR, `${mark.path}:${mark.line}`],
+  });
+  
+  await editorProcess.status();
 }
 
 function renderResource(resource: IResource): Table {
@@ -166,6 +175,7 @@ async function stationSelector(waystations: IWaystation[]) {
 
 export {
   markEditor,
+  markPathEditor,
   markSelector,
   markTable,
   markTableWithTitle,
