@@ -19,8 +19,12 @@ async function renderMarkWalk(
   waystation: IWaystation,
   startAt: IMark | undefined = undefined,
 ) {
-  let index = waystation.marks.findIndex((mark) => mark.id === startAt?.id) ||
-    0;
+  let index = 0;
+
+  if(!!startAt && startAt.path){
+    index = waystation.marks.findIndex((mark) => mark.id === startAt.id);
+  }
+
   const mark = waystation.marks[index];
 
   while (true) {
