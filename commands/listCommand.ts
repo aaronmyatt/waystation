@@ -13,9 +13,7 @@ export default function listCommand() {
       const hasMarks = waystation.marks.length > 0;
 
       if (!hasMarks) {
-        console.log("No marks found.");
-        console.log("Use: waystion m '/a/path/of/interst:1'");
-        console.log("To add new marks to the current Waystation");
+        markComponents.renderNoMarksWarning();
       }
 
       while (hasMarks) {

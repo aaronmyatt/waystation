@@ -84,4 +84,10 @@ async function renderMarkWalk(
   }
 }
 
-export default { renderMarkWalk };
+function renderNoMarksWarning(){
+    console.log("No marks found.");
+    console.log("Use: waystion m '/a/path/of/interst:1'");
+    console.log("To add new marks to the current Waystation");
+}
+
+export default { renderMarkWalk, renderNoMarksWarning };
