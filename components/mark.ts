@@ -25,9 +25,10 @@ async function renderMarkWalk(
     index = waystation.marks.findIndex((mark) => mark.id === startAt.id);
   }
 
-  const mark = waystation.marks[index];
-
+  
   while (true) {
+    const mark = waystation.marks[index];
+
     console.log(ansi.cursorTo(0, 0).eraseDown());
     console.log(
       `Mark: ${colors.magenta((index + 1) + "/" + (waystation.marks.length))}`,
