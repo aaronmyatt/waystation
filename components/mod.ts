@@ -122,7 +122,7 @@ async function markEditor(
   await Deno.writeTextFile(TEMP_FILE, String(mark[property]));
 
   const editorProcess = Deno.run({
-    cmd: [EDITOR, TEMP_FILE],
+    cmd: [EDITOR, "--wait", TEMP_FILE],
   });
 
   await editorProcess.status();
