@@ -134,7 +134,7 @@ async function markEditor(
 
 async function markPathEditor(mark: IMark): Promise<void> {
   const editorProcess = Deno.run({
-    cmd: [EDITOR, `${mark.path}:${mark.line}`],
+    cmd: [EDITOR, '--goto', Waystation.markWithPath(mark)],
   });
 
   await editorProcess.status();
