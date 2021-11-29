@@ -1,7 +1,7 @@
 /// <reference types="../types.d.ts" />
 
 import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
-
+import { events } from "./constants.ts";
 // This makes me feel a little itchy... I was hoping to keep the
 // core of Waystatin "clean" with no reliance no IO so that it could
 // packaged into a browser compatible module
@@ -38,11 +38,13 @@ const EmptyResource: IResource = {
 };
 
 export default function Waystation(name?: string): IWaystation {
-  return Object.freeze({
+  const waystation = Object.freeze({
     ...EmptyWaystation,
     name,
     id: _generateUniqueId(),
   });
+  dispatchEvent(new CustomEvent(events.NEW_WAYSTATION, {detail: waystation}));
+  return waystation;
 }
 
 Waystation.addMark = (waystation: IWaystation, mark: IMark): IWaystation => {
@@ -107,7 +109,9 @@ Waystation.editMark = (
     [property]: change,
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
-  return Waystation.replaceMark(waystation, index, newMark);
+  const newWaystation = Waystation.replaceMark(waystation, index, newMark);
+  dispatchEvent(new CustomEvent(events.EDIT_MARK, {detail: {waystation: newWaystation}}));
+  return newWaystation
 };
 
 Waystation.listMarks = (waystation: IWaystation): readonly IMark[] => {
