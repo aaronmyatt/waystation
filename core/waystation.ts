@@ -7,6 +7,9 @@ import { events } from "./constants.ts";
 // packaged into a browser compatible module
 const _fullPath = (filename: string) => path.join(Deno.cwd(), filename);
 const _generateUniqueId = () => crypto.randomUUID();
+const _dispatchCustomEvent = (eventName: string, payload: unknown) => {
+  dispatchEvent(new CustomEvent(eventName, { detail: payload }));
+};
 
 const DEFAULT_DIR = "~/.waystation/";
 const FILE_PATH_REGEX =
@@ -43,7 +46,6 @@ export default function Waystation(name?: string): IWaystation {
     name,
     id: _generateUniqueId(),
   });
-  dispatchEvent(new CustomEvent(events.NEW_WAYSTATION, {detail: waystation}));
   return waystation;
 }
 
@@ -79,7 +81,9 @@ Waystation.makeMark = (path: string): IMark => {
 
 Waystation.newMark = (waystation: IWaystation, path: string): IWaystation => {
   const mark = Waystation.makeMark(path);
-  return Waystation.addMark(waystation, mark);
+  waystation = Waystation.addMark(waystation, mark);
+  _dispatchCustomEvent(events.NEW_MARK, { waystation });
+  return waystation;
 };
 
 Waystation.replaceMark = (
@@ -110,8 +114,8 @@ Waystation.editMark = (
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   const newWaystation = Waystation.replaceMark(waystation, index, newMark);
-  dispatchEvent(new CustomEvent(events.EDIT_MARK, {detail: {waystation: newWaystation}}));
-  return newWaystation
+  _dispatchCustomEvent(events.EDIT_MARK, {waystation: newWaystation});
+  return newWaystation;
 };
 
 Waystation.listMarks = (waystation: IWaystation): readonly IMark[] => {
@@ -206,7 +210,7 @@ Waystation.markWithPath = (mark: IMark): string => {
     const parts = [mark.path, mark.line || 0, mark.column || 0];
     return parts.join(":");
   } catch {
-    return ""
+    return "";
   }
 };
 
@@ -244,5 +248,7 @@ Waystation.newResource = (
     ],
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
-  return Waystation.replaceMark(waystation, index, updatedMark);
+  waystation = Waystation.replaceMark(waystation, index, updatedMark);
+  _dispatchCustomEvent(events.NEW_RESOURCE, { waystation });
+  return waystation;
 };
