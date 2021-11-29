@@ -206,3 +206,14 @@ Deno.test("adds note type resource to mark", () => {
   assert(updatedMark!.resources!.length > 0);
   assertEquals(updatedMark!.resources![0].body, RESOURCE_TEXT);
 });
+
+Deno.test("removes resource by name", () => {
+  const RESOURCE_TEXT = "some text";
+  let waystation = Waystation();
+  waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
+  const mark = Waystation.lastMark(waystation);
+  waystation = Waystation.newResource(waystation, mark!, "note", RESOURCE_TEXT, "File Context");
+  assertEquals(Waystation.lastMark(waystation)!.resources!.length, 1);
+  waystation = Waystation.removeResourceByName(waystation, mark!, "File Context")
+  assertEquals(Waystation.lastMark(waystation)!.resources!.length, 0);
+});

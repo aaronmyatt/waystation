@@ -252,3 +252,16 @@ Waystation.newResource = (
   _dispatchCustomEvent(events.NEW_RESOURCE, { waystation });
   return waystation;
 };
+
+Waystation.removeResourceByName = (waystation: IWaystation, mark: IMark, name: string) => {
+  const oldMark = waystation.marks.find((oldMark) => oldMark.id === mark.id);
+  if (oldMark === undefined) return waystation;
+
+  const updatedMark = {
+    ...oldMark,
+    resources: oldMark.resources?.filter(resource => resource.name !== name) || [],
+  };
+  const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
+  waystation = Waystation.replaceMark(waystation, index, updatedMark);
+  return waystation;
+}
