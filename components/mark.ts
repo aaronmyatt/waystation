@@ -21,11 +21,10 @@ async function renderMarkWalk(
 ) {
   let index = 0;
 
-  if(!!startAt && startAt.path){
+  if (!!startAt && startAt.path) {
     index = waystation.marks.findIndex((mark) => mark.id === startAt.id);
   }
 
-  
   while (true) {
     const mark = waystation.marks[index];
 
@@ -84,8 +83,8 @@ async function renderMarkWalk(
   }
 }
 
-function renderNoMarksWarning(){
-    console.log(`
+function renderNoMarksWarning() {
+  console.log(`
 ${colors.brightRed("No marks found.")}
 To add new marks to the current Waystation
 Use: ${colors.bold("waystion m '/a/path/of/interst:1'")}
