@@ -134,7 +134,7 @@ async function markEditor(
 
 async function markPathEditor(mark: IMark): Promise<void> {
   const editorProcess = Deno.run({
-    cmd: [EDITOR, '--goto', Waystation.markWithPath(mark)],
+    cmd: [EDITOR, "--goto", Waystation.markWithPath(mark)],
   });
 
   await editorProcess.status();
@@ -145,14 +145,14 @@ function renderResource(resource: IResource): Table {
     new Row(new Cell("")),
     new Row(
       new Cell(
-        `${colors.brightBlue(resource.type)}:  ${resource.name || resource.id}`,
+        `${colors.brightBlue(resource.type)}:  ${resource.name || resource.id || ""}`,
       ),
     ),
-    new Row(
+     new Row(
       new Cell(
-        colors.bold(
-          resource.body || "",
-        ),
+        (resource.body && colors.bold(
+          resource.body,
+        )) || "",
       ),
     ),
   );
