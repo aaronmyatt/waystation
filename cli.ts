@@ -5,6 +5,7 @@ import {
   renderRecentWaystationList,
   renderWaystation,
 } from "./components/mod.ts";
+import registerListeners from "./listeners/mod.ts";
 
 import {
   listCommand,
@@ -13,6 +14,8 @@ import {
   openCommand,
   walkCommand,
 } from "./commands/mod.ts";
+
+registerListeners();
 
 (async function () {
   await new Command()
@@ -29,11 +32,11 @@ import {
     .command("n", await newCommand())
     .command("mark", await markCommand())
     .command("m", await markCommand())
-    .command("list", await listCommand())
-    .command("l", await listCommand())
-    .command("walk", await walkCommand())
-    .command("w", await walkCommand())
-    .command("open", await openCommand())
-    .command("o", await openCommand())
+    .command("list", listCommand())
+    .command("l", listCommand())
+    .command("walk", walkCommand())
+    .command("w", walkCommand())
+    .command("open", openCommand())
+    .command("o", openCommand())
     .parse(Deno.args);
 })();
