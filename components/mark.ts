@@ -57,7 +57,6 @@ async function renderMarkWalk(
 
     if (press.key === "e") {
       waystation = await markEditor(waystation, mark);
-      writeWaystation(waystation);
       continue;
     }
 

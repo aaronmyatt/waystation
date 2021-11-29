@@ -18,7 +18,6 @@ async function defaultMarkCommand(
   let waystation = await readWaystation();
   if (path) {
     waystation = Waystation.newMark(waystation, path);
-    await writeWaystation(waystation);
   } else {
     const files = await projectFiles();
     markName = await Input.prompt({
@@ -48,7 +47,6 @@ async function defaultMarkCommand(
     );
   }
   console.dir(waystation);
-  writeWaystation(waystation);
 }
 
 async function removeMarkCommand() {
