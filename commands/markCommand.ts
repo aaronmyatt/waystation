@@ -3,7 +3,6 @@ import { Input } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
 
 import Waystation from "../core/waystation.ts";
 import {
-  pathContext,
   projectFiles,
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
