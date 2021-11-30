@@ -3,9 +3,9 @@ import { events } from "../core/constants.ts";
 import { writeBackupToFS, writeCurrentToFS } from "../utils/mod.ts";
 import fileContextResource from "../fileContextResource.ts";
 
-const _writeAndBackup = (waystation: IWaystation) => {
-  writeCurrentToFS(waystation);
-  writeBackupToFS(waystation);
+const _writeAndBackup = async (waystation: IWaystation) => {
+  await writeCurrentToFS(waystation);
+  await writeBackupToFS(waystation);
 };
 
 function onEditMark() {
@@ -59,5 +59,5 @@ export default function registerListeners() {
   onEditResource();
   onNewResource();
   onNewWaystation();
-  onEditWaystation
+  onEditWaystation;
 }
