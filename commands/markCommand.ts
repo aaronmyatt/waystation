@@ -8,6 +8,7 @@ import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
+import fileContextResource from "../fileContextResource.ts";
 
 async function defaultMarkCommand(
   options: Record<string, string>,
@@ -37,14 +38,7 @@ async function defaultMarkCommand(
     waystation = Waystation.editMark(waystation, mark, "name", markName);
   }
   if (mark) {
-    const context = await pathContext(mark.path, mark.line || 0);
-    waystation = Waystation.newResource(
-      waystation,
-      mark,
-      "note",
-      context,
-      "File Context",
-    );
+    waystation = await fileContextResource(waystation, mark);
   }
   console.dir(waystation);
 }
