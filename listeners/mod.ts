@@ -1,5 +1,7 @@
+import Waystation from "../core/waystation.ts";
 import { events } from "../core/constants.ts";
 import { writeBackupToFS, writeCurrentToFS } from "../utils/mod.ts";
+import fileContextResource from "../fileContextResource.ts";
 
 const _writeAndBackup = (waystation: IWaystation) => {
   writeCurrentToFS(waystation);
@@ -8,8 +10,11 @@ const _writeAndBackup = (waystation: IWaystation) => {
 
 function onEditMark() {
   addEventListener(events.EDIT_MARK, function (e) {
-    const waystation = (e as CustomEvent).detail.waystation;
-    _writeAndBackup(waystation);
+    let { waystation, mark } = (e as CustomEvent).detail;
+    waystation = Waystation.removeResourceByName(waystation, mark, "File Context")
+    fileContextResource(waystation, mark).then(waystation => {
+      _writeAndBackup(waystation);
+    });
   });
 }
 
