@@ -82,7 +82,7 @@ Waystation.makeMark = (path: string): IMark => {
 Waystation.newMark = (waystation: IWaystation, path: string): IWaystation => {
   const mark = Waystation.makeMark(path);
   waystation = Waystation.addMark(waystation, mark);
-  _dispatchCustomEvent(events.NEW_MARK, { waystation });
+  _dispatchCustomEvent(events.NEW_MARK, { waystation, mark });
   return waystation;
 };
 
@@ -114,7 +114,7 @@ Waystation.editMark = (
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   const newWaystation = Waystation.replaceMark(waystation, index, newMark);
-  _dispatchCustomEvent(events.EDIT_MARK, {waystation: newWaystation});
+  _dispatchCustomEvent(events.EDIT_MARK, { waystation: newWaystation, mark: newMark });
   return newWaystation;
 };
 
@@ -249,7 +249,7 @@ Waystation.newResource = (
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   waystation = Waystation.replaceMark(waystation, index, updatedMark);
-  _dispatchCustomEvent(events.NEW_RESOURCE, { waystation });
+  _dispatchCustomEvent(events.NEW_RESOURCE, { waystation, resource });
   return waystation;
 };
 
