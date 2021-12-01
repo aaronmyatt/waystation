@@ -36,9 +36,7 @@ async function defaultMarkCommand(
   if ((markName && !!mark)) {
     waystation = Waystation.editMark(waystation, mark, "name", markName);
   }
-  if (mark) {
-    waystation = await fileContextResource(waystation, mark);
-  }
+  
   console.dir(waystation);
 }
 

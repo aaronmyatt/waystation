@@ -32,8 +32,14 @@ function onEditMark() {
 }
 
 function onNewMark() {
-  addEventListener(events.NEW_MARK, function (e) {
-    const waystation = (e as CustomEvent).detail.waystation;
+  addEventListener(events.NEW_MARK, async function (e) {
+    let { waystation, mark } = (e as CustomEvent).detail;
+    waystation = Waystation.removeResourceByName(
+      waystation,
+      mark,
+      "File Context",
+    );
+    waystation = await fileContextResource(waystation, mark);
     waystation.marks = waystation.marks.map(ensureMarkPathAbsolute);
     _writeAndBackup(waystation);
   });
