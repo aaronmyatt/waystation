@@ -145,10 +145,12 @@ function renderResource(resource: IResource): Table {
     new Row(new Cell("")),
     new Row(
       new Cell(
-        `${colors.brightBlue(resource.type)}:  ${resource.name || resource.id || ""}`,
+        `${colors.brightBlue(resource.type)}:  ${
+          resource.name || resource.id || ""
+        }`,
       ),
     ),
-     new Row(
+    new Row(
       new Cell(
         (resource.body && colors.bold(
           resource.body,
