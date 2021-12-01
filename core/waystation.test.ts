@@ -37,7 +37,7 @@ A new Mark should be created when called with _any_ string
 Deno.test("Simple path", () => {
   let waystation = Waystation();
   waystation = Waystation.newMark(waystation, BASIC_PATH);
-  assertStringIncludes(waystation.marks[0].path, BASIC_PATH);
+  assertEquals(waystation.marks[0].path, BASIC_PATH);
 });
 
 Deno.test("Marks have a unique uuid", () => {
@@ -212,8 +212,18 @@ Deno.test("removes resource by name", () => {
   let waystation = Waystation();
   waystation = Waystation.newMark(waystation, PATH_WITH_LINE_AND_COLUMN);
   const mark = Waystation.lastMark(waystation);
-  waystation = Waystation.newResource(waystation, mark!, "note", RESOURCE_TEXT, "File Context");
+  waystation = Waystation.newResource(
+    waystation,
+    mark!,
+    "note",
+    RESOURCE_TEXT,
+    "File Context",
+  );
   assertEquals(Waystation.lastMark(waystation)!.resources!.length, 1);
-  waystation = Waystation.removeResourceByName(waystation, mark!, "File Context")
+  waystation = Waystation.removeResourceByName(
+    waystation,
+    mark!,
+    "File Context",
+  );
   assertEquals(Waystation.lastMark(waystation)!.resources!.length, 0);
 });

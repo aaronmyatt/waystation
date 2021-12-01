@@ -1,19 +1,14 @@
 /// <reference types="../types.d.ts" />
 
-import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
 import { events } from "./constants.ts";
-// This makes me feel a little itchy... I was hoping to keep the
-// core of Waystatin "clean" with no reliance no IO so that it could
-// packaged into a browser compatible module
-const _fullPath = (filename: string) => path.join(Deno.cwd(), filename);
+import pathHandler from "../pathHandler.ts";
+
 const _generateUniqueId = () => crypto.randomUUID();
 const _dispatchCustomEvent = (eventName: string, payload: unknown) => {
   dispatchEvent(new CustomEvent(eventName, { detail: payload }));
 };
 
 const DEFAULT_DIR = "~/.waystation/";
-const FILE_PATH_REGEX =
-  /(?<path>(?:\w|\/|\.)*):(?<line>\d+)(?::(?<column>\d+))?(?::(?<snippet>.*))?/;
 
 export const EmptyWaystation: IWaystation = {
   id: "",
@@ -59,23 +54,11 @@ Waystation.addMark = (waystation: IWaystation, mark: IMark): IWaystation => {
 };
 
 Waystation.makeMark = (path: string): IMark => {
-  const matches = path.match(FILE_PATH_REGEX);
   const id = _generateUniqueId();
-  if (matches && matches.length > 0 && matches.groups) {
-    return {
-      ...EmptyMark,
-      id,
-      path: _fullPath(matches.groups.path),
-      line: Number(matches.groups.line || 0),
-      column: Number(matches.groups.column || 0),
-      name: matches.groups.snippet || "",
-      body: matches.groups.snippet || "",
-    };
-  }
   return {
     ...EmptyMark,
     id,
-    path: _fullPath(path),
+    ...pathHandler(path),
   };
 };
 
@@ -114,7 +97,10 @@ Waystation.editMark = (
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   const newWaystation = Waystation.replaceMark(waystation, index, newMark);
-  _dispatchCustomEvent(events.EDIT_MARK, { waystation: newWaystation, mark: newMark });
+  _dispatchCustomEvent(events.EDIT_MARK, {
+    waystation: newWaystation,
+    mark: newMark,
+  });
   return newWaystation;
 };
 
@@ -253,15 +239,20 @@ Waystation.newResource = (
   return waystation;
 };
 
-Waystation.removeResourceByName = (waystation: IWaystation, mark: IMark, name: string) => {
+Waystation.removeResourceByName = (
+  waystation: IWaystation,
+  mark: IMark,
+  name: string,
+) => {
   const oldMark = waystation.marks.find((oldMark) => oldMark.id === mark.id);
   if (oldMark === undefined) return waystation;
 
   const updatedMark = {
     ...oldMark,
-    resources: oldMark.resources?.filter(resource => resource.name !== name) || [],
+    resources:
+      oldMark.resources?.filter((resource) => resource.name !== name) || [],
   };
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   waystation = Waystation.replaceMark(waystation, index, updatedMark);
   return waystation;
-}
+};
