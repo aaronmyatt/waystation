@@ -36,7 +36,7 @@ async function defaultMarkCommand(
   if ((markName && !!mark)) {
     waystation = Waystation.editMark(waystation, mark, "name", markName);
   }
-  
+
   console.dir(waystation);
 }
 
