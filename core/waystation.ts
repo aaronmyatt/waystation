@@ -1,7 +1,7 @@
 /// <reference types="../types.d.ts" />
 
 import { events } from "./constants.ts";
-import pathHandler from "../pathHandler.ts";
+import pathHandler from "./pathHandler.ts";
 
 const _generateUniqueId = () => crypto.randomUUID();
 const _dispatchCustomEvent = (eventName: string, payload: unknown) => {
