@@ -69,7 +69,7 @@ function onNewWaystation() {
 function onEditWaystation() {
   addEventListener(events.EDIT_WAYSTATION, function (e) {
     const waystation = (e as CustomEvent).detail.waystation;
-    console.log(waystation);
+    _writeAndBackup(waystation);
   });
 }
 
@@ -79,5 +79,5 @@ export default function registerListeners() {
   onEditResource();
   onNewResource();
   onNewWaystation();
-  onEditWaystation;
+  onEditWaystation();
 }
