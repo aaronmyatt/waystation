@@ -149,10 +149,13 @@ Waystation.reorderMarks = (
     [],
   );
 
-  return {
+  const newWaystation = {
     ...waystation,
     marks,
   };
+
+  _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation: newWaystation });
+  return newWaystation
 };
 
 Waystation.moveMarkUp = (waystation: IWaystation, mark: IMark) => {
@@ -185,10 +188,13 @@ Waystation.removeMarkByIndex = (
     return index !== markIndex;
   });
 
-  return {
+  waystation = {
     ...waystation,
     marks,
   };
+
+  _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation });
+  return waystation;
 };
 
 Waystation.markWithPath = (mark: IMark): string => {
