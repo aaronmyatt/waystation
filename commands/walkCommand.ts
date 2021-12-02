@@ -8,9 +8,9 @@ async function defaultWalkCommand() {
 
   if (!hasMarks) {
     markComponents.renderNoMarksWarning();
+  } else {
+    await markComponents.renderMarkWalk(waystation);
   }
-
-  await markComponents.renderMarkWalk(waystation);
 }
 
 export default function walkCommand() {
