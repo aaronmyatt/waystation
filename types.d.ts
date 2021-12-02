@@ -1,8 +1,9 @@
 interface IWaystation {
   id: string;
-  name?: string;
+  name: string;
   marks: readonly IMark[];
   configuration: IWaystationConfiguration;
+  tags: string[];
 }
 
 interface IMark {

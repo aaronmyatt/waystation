@@ -12,10 +12,12 @@ const DEFAULT_DIR = "~/.waystation/";
 
 export const EmptyWaystation: IWaystation = {
   id: "",
+  name: "",
   marks: Object.freeze([]),
   configuration: {
     directory: DEFAULT_DIR,
   },
+  tags: [],
 };
 
 export const EmptyMark: IMark = {
@@ -155,7 +157,7 @@ Waystation.reorderMarks = (
   };
 
   _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation: newWaystation });
-  return newWaystation
+  return newWaystation;
 };
 
 Waystation.moveMarkUp = (waystation: IWaystation, mark: IMark) => {
