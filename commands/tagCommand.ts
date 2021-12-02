@@ -7,13 +7,13 @@ export default function tagCommand() {
   return new Cliffy.Command()
     .arguments("[tag:string]")
     .description("Update current waystation with a tag")
-    .action(async (_optons, tag: string|undefined) => {
+    .action(async (_optons, tag: string | undefined) => {
       let waystation = await readWaystation();
-      if(tag){
-        waystation = Waystation.addTag(waystation, tag)
+      if (tag) {
+        waystation = Waystation.addTag(waystation, tag);
       } else {
         waystation.marks = [];
         console.dir(waystation);
       }
-    })
+    });
 }

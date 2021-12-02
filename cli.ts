@@ -11,8 +11,8 @@ import {
   markCommand,
   newCommand,
   openCommand,
-  walkCommand,
   tagCommand,
+  walkCommand,
 } from "./commands/mod.ts";
 
 registerListeners();

@@ -228,13 +228,13 @@ Deno.test("removes resource by name", () => {
   assertEquals(Waystation.lastMark(waystation)!.resources!.length, 0);
 });
 
-Deno.test('Waystation.addTag', () => {
+Deno.test("Waystation.addTag", () => {
   let waystation = Waystation();
   waystation = Waystation.addTag(waystation, "deno");
   assertEquals(waystation.tags.length, 1);
 });
 
-Deno.test('Waystation.addTag, if tag empty', () => {
+Deno.test("Waystation.addTag, if tag empty", () => {
   let waystation = Waystation();
   waystation = Waystation.addTag(waystation, "");
   assertEquals(waystation.tags.length, 0);
