@@ -4,7 +4,6 @@ import Waystation from "../core/waystation.ts";
 import {
   projectFiles,
   readWaystationFromFS as readWaystation,
-  writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
 
 async function defaultMarkCommand(
@@ -39,18 +38,17 @@ async function defaultMarkCommand(
 }
 
 async function removeMarkCommand() {
-  let waystation = await readWaystation();
+  const waystation = await readWaystation();
   return new Cliffy.Command()
     .arguments("<index:number>")
     .description("Remove a mark")
     .action((_, index = 0) => {
-      waystation = Waystation.removeMarkByIndex(waystation, Number(index));
-      writeWaystation(waystation);
+      Waystation.removeMarkByIndex(waystation, Number(index));
     });
 }
 
 async function orderMarkCommand() {
-  let waystation = await readWaystation();
+  const waystation = await readWaystation();
   return new Cliffy.Command()
     // discovered some unfortunate, awkward behaviour when typing
     // numeric arguments like: <index:number> <to:number>
@@ -60,12 +58,11 @@ async function orderMarkCommand() {
     .arguments("<index> <to>")
     .description("Move a mark")
     .action((_, index, to) => {
-      waystation = Waystation.reorderMarks(
+      Waystation.reorderMarks(
         waystation,
         Number(index),
         Number(to),
       );
-      writeWaystation(waystation);
     });
 }
 

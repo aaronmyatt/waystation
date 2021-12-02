@@ -4,8 +4,6 @@ import {
 import { Cliffy } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
 
-import { writeCurrentToFS as writeWaystation } from "../utils/mod.ts";
-
 import {
   markEditor,
   markPathEditor,
@@ -63,14 +61,12 @@ async function renderMarkWalk(
     if (press.key === "p") {
       waystation = Waystation.moveMarkUp(waystation, mark);
       index > 0 && index--;
-      writeWaystation(waystation);
       continue;
     }
 
     if (press.key === "n") {
       waystation = Waystation.moveMarkDown(waystation, mark);
       (index < (waystation.marks.length - 1)) && index++;
-      writeWaystation(waystation);
       continue;
     }
 
