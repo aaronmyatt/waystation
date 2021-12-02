@@ -1,13 +1,13 @@
-import * as pathLib from "https://deno.land/std@0.113.0/path/mod.ts";
+import { stdLib } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
 import { events } from "../core/constants.ts";
 import { writeBackupToFS, writeCurrentToFS } from "../utils/mod.ts";
 import fileContextResource from "../fileContextResource.ts";
 
-const _fullPath = (filename: string) => pathLib.join(Deno.cwd(), filename);
+const _fullPath = (filename: string) => stdLib.Path.join(Deno.cwd(), filename);
 
 const ensureMarkPathAbsolute = (mark: IMark) => {
-  if (pathLib.isAbsolute(mark.path)) return mark;
+  if (stdLib.Path.isAbsolute(mark.path)) return mark;
   mark.path = _fullPath(mark.path || "");
   return mark;
 };

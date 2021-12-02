@@ -1,4 +1,4 @@
-import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
+import { Cliffy } from "../deps.ts";
 import { readWaystationFromFS as readWaystation } from "../utils/mod.ts";
 import { markComponents } from "../components/mod.ts";
 
@@ -14,7 +14,7 @@ async function defaultWalkCommand() {
 }
 
 export default function walkCommand() {
-  return new Command()
+  return new Cliffy.Command()
     .description(
       "Explore marks one by one.",
     )

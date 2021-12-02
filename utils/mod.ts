@@ -1,7 +1,4 @@
-import * as path from "https://deno.land/std@0.113.0/path/mod.ts";
-import { readLines } from "https://deno.land/std@0.113.0/io/mod.ts";
-import { walk } from "https://deno.land/std@0.115.1/fs/mod.ts";
-
+import { stdLib } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
 
 const USER_OS_HOME = Deno.env.get("HOME");
@@ -15,7 +12,7 @@ async function projectFiles() {
     // we bail early.
     await Deno.lstat(".git");
     for await (
-      const entry of walk(".", { includeDirs: false, skip: [/git/] })
+      const entry of stdLib.Walk(".", { includeDirs: false, skip: [/git/] })
     ) {
       files.push(entry);
     }
@@ -48,7 +45,10 @@ async function recentlyEditedBackupFiles(
   }
   const recentFiles = await Promise.all(backupFilesArray
     .map(async (entry) => {
-      const realPath = path.join(WAYSTATION_CONFIG_DIRECTORY, entry.name);
+      const realPath = stdLib.Path.join(
+        WAYSTATION_CONFIG_DIRECTORY,
+        entry.name,
+      );
       return {
         path: realPath,
         entry,
@@ -122,7 +122,10 @@ async function writeCurrentToFS(waystation: IWaystation) {
 }
 
 async function writeBackupToFS(waystation: IWaystation) {
-  const backupPath = path.join(WAYSTATION_CONFIG_DIRECTORY, waystation.id);
+  const backupPath = stdLib.Path.join(
+    WAYSTATION_CONFIG_DIRECTORY,
+    waystation.id,
+  );
   return await writeWaystationToFS(waystation, backupPath);
 }
 
@@ -156,7 +159,7 @@ async function pathContext(
   let index = 0;
   let context = "";
 
-  for await (const line of readLines(fileReader)) {
+  for await (const line of stdLib.ReadLines(fileReader)) {
     if (index > (target - range) && index <= (target + range)) {
       context = context.concat(line + "\n");
     }

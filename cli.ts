@@ -1,5 +1,4 @@
-import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
-
+import { Cliffy } from "./deps.ts";
 import { readWaystationFromFS as readWaystation } from "./utils/mod.ts";
 import {
   renderRecentWaystationList,
@@ -18,7 +17,7 @@ import {
 registerListeners();
 
 (async function () {
-  await new Command()
+  await new Cliffy.Command()
     .name("Waystation")
     .version("0.0.1")
     .description('"This is the way" - Mandalorian')

@@ -1,10 +1,10 @@
-import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
+import { Cliffy } from "../deps.ts";
 
 import { readWaystationFromFS as readWaystation } from "../utils/mod.ts";
 import { markComponents, markSelector } from "../components/mod.ts";
 
 export default function listCommand() {
-  return new Command()
+  return new Cliffy.Command()
     .description(
       "See all marks in the current Waystation",
     )

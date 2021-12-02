@@ -1,9 +1,7 @@
 import {
-  keypress,
   KeyPressEvent,
 } from "https://deno.land/x/cliffy@v0.20.0/keypress/mod.ts";
-import { ansi, colors } from "https://deno.land/x/cliffy@v0.20.0/ansi/mod.ts";
-
+import { Cliffy } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
 
 import { writeCurrentToFS as writeWaystation } from "../utils/mod.ts";
@@ -28,23 +26,25 @@ async function renderMarkWalk(
   while (true) {
     const mark = waystation.marks[index];
 
-    console.log(ansi.cursorTo(0, 0).eraseDown());
+    console.log(Cliffy.Ansi.cursorTo(0, 0).eraseDown());
     console.log(
-      `Mark: ${colors.magenta((index + 1) + "/" + (waystation.marks.length))}`,
+      `Mark: ${
+        Cliffy.Colors.magenta((index + 1) + "/" + (waystation.marks.length))
+      }`,
     );
     const table = renderMark(mark);
     table.render();
     console.log(
-      ` edit:${colors.bold("e")}  up:${colors.bold("p")}  down:${
-        colors.bold("n")
-      }  next:${colors.bold("space")} `,
+      ` edit:${Cliffy.Colors.bold("e")}  up:${Cliffy.Colors.bold("p")}  down:${
+        Cliffy.Colors.bold("n")
+      }  next:${Cliffy.Colors.bold("space")} `,
     );
     mark.resources && mark.resources.map((resource) => {
       const table = renderResource(resource);
       table.render();
     });
 
-    const press: KeyPressEvent = await keypress();
+    const press: KeyPressEvent = await Cliffy.keypress();
 
     if (press.ctrlKey && press.key === "c") {
       break;
@@ -84,9 +84,9 @@ async function renderMarkWalk(
 
 function renderNoMarksWarning() {
   console.log(`
-${colors.brightRed("No marks found.")}
+${Cliffy.Colors.brightRed("No marks found.")}
 To add new marks to the current Waystation
-Use: ${colors.bold("waystion m '/a/path/of/interst:1'")}
+Use: ${Cliffy.Colors.bold("waystion m '/a/path/of/interst:1'")}
     `);
 }
 

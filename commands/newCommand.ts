@@ -1,4 +1,4 @@
-import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
+import { Cliffy } from "../deps.ts";
 
 import Waystation from "../core/waystation.ts";
 import {
@@ -9,7 +9,7 @@ import {
 
 export default async function newCommand() {
   let waystation = await readWaystation();
-  return new Command()
+  return new Cliffy.Command()
     .arguments("<name:string>")
     .description(
       "Create and name a new Waystation, overwriting the current Waystation",

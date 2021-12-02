@@ -1,5 +1,4 @@
-import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
-import { Input } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
+import { Cliffy } from "../deps.ts";
 
 import Waystation from "../core/waystation.ts";
 import {
@@ -7,7 +6,6 @@ import {
   readWaystationFromFS as readWaystation,
   writeWaystationToFS as writeWaystation,
 } from "../utils/mod.ts";
-import fileContextResource from "../fileContextResource.ts";
 
 async function defaultMarkCommand(
   options: Record<string, string>,
@@ -20,11 +18,11 @@ async function defaultMarkCommand(
     waystation = Waystation.newMark(waystation, path);
   } else {
     const files = await projectFiles();
-    markName = await Input.prompt({
+    markName = await Cliffy.Input.prompt({
       message: "Name this mark",
     });
     console.log(`Name: ${markName}`);
-    const file = await Input.prompt({
+    const file = await Cliffy.Input.prompt({
       message: "Attach a file path to this mark",
       suggestions: files.map((file) => file.path),
       list: true,
@@ -42,7 +40,7 @@ async function defaultMarkCommand(
 
 async function removeMarkCommand() {
   let waystation = await readWaystation();
-  return new Command()
+  return new Cliffy.Command()
     .arguments("<index:number>")
     .description("Remove a mark")
     .action((_, index = 0) => {
@@ -53,7 +51,7 @@ async function removeMarkCommand() {
 
 async function orderMarkCommand() {
   let waystation = await readWaystation();
-  return new Command()
+  return new Cliffy.Command()
     // discovered some unfortunate, awkward behaviour when typing
     // numeric arguments like: <index:number> <to:number>
     // 0th arguments like: mark 0 2 end up being nullified
@@ -72,7 +70,7 @@ async function orderMarkCommand() {
 }
 
 export default async function markCommand() {
-  return new Command()
+  return new Cliffy.Command()
     .arguments("[path:string] [name:string]")
     .description(
       "Mark any file, folder or url and save to the current Waystation",

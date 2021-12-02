@@ -1,22 +1,18 @@
-import {
-  Cell,
-  Row,
-  Table,
-} from "https://deno.land/x/cliffy@v0.20.0/table/mod.ts";
-import { colors } from "https://deno.land/x/cliffy@v0.20.0/ansi/colors.ts";
-import { Select } from "https://deno.land/x/cliffy@v0.20.0/prompt/mod.ts";
-
+import { Cliffy } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
 import markComponents from "./mark.ts";
 
+const { Table, Row, Cell } = Cliffy;
+
 const EDITOR = Deno.env.get("EDITOR") || "nano";
 
-const tableTitle = (title: string): Row => {
-  title = colors.bold.underline.yellow(
-    title,
+const tableTitle = (title: string) => {
+  return new Row(
+    new Cell(Cliffy.Colors.bold.underline.yellow(
+      title,
+    )),
   );
-  return new Row(new Cell(title));
 };
 
 async function renderRecentWaystationList() {
@@ -29,10 +25,10 @@ async function renderRecentWaystationList() {
 
 function renderWaystation(waystation: IWaystation) {
   return new Table(
-    waystation.name && new Row("Current Waystation") || new Row(""),
+    waystation.name && new Row(new Cell("Current Waystation")) || new Row(""),
     tableTitle(waystation.name || "Current Waystation"),
     new Row(""),
-    new Row("Marks:"),
+    new Row(new Cell("Marks:")),
     ...waystation.marks.map((mark, index) => {
       return new Row(
         new Cell(
@@ -47,16 +43,16 @@ function renderWaystation(waystation: IWaystation) {
   );
 }
 
-function renderMark(mark: IMark): Table {
+function renderMark(mark: IMark) {
   return new Table(
     new Row(new Cell("")),
     new Row(
       new Cell(`${(Waystation.markWithPath(mark) || mark.id)}
-${colors.bold.green(mark.name || "Add a short descriptive name")}`),
+${Cliffy.Colors.bold.green(mark.name || "Add a short descriptive name")}`),
     ),
     new Row(
       new Cell(
-        colors.bold(
+        Cliffy.Colors.bold(
           mark.body ||
             "Describe what this mark is and/or what should be done with it.",
         ),
@@ -67,7 +63,7 @@ ${colors.bold.green(mark.name || "Add a short descriptive name")}`),
 
 function markTable(
   waystation: IWaystation,
-): Table {
+) {
   const marks = Waystation.listMarks(waystation);
 
   const table = marks.map((mark) => {
@@ -91,7 +87,7 @@ async function markSelector(waystation: IWaystation) {
     return { name: table.toString(), value: mark.id };
   });
 
-  const userSelectedMarkId: string = await Select.prompt({
+  const userSelectedMarkId: string = await Cliffy.Select.prompt({
     message: "Pick a Mark",
     options,
   });
@@ -109,7 +105,7 @@ async function markEditor(
   const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
   const forbiddenKeys = ["id", "resources"];
 
-  const property = await Select.prompt({
+  const property = await Cliffy.Select.prompt({
     message: "Pick a property",
     search: true,
     options: Object.keys(mark)
@@ -140,19 +136,19 @@ async function markPathEditor(mark: IMark): Promise<void> {
   await editorProcess.status();
 }
 
-function renderResource(resource: IResource): Table {
+function renderResource(resource: IResource) {
   return new Table(
     new Row(new Cell("")),
     new Row(
       new Cell(
-        `${colors.brightBlue(resource.type)}:  ${
+        `${Cliffy.Colors.brightBlue(resource.type)}:  ${
           resource.name || resource.id || ""
         }`,
       ),
     ),
     new Row(
       new Cell(
-        (resource.body && colors.bold(
+        (resource.body && Cliffy.Colors.bold(
           resource.body,
         )) || "",
       ),
@@ -165,7 +161,7 @@ async function stationSelector(waystations: IWaystation[]) {
     return { name: station.name, value: station.id };
   });
 
-  const userSelectedStationId: string = await Select.prompt({
+  const userSelectedStationId: string = await Cliffy.Select.prompt({
     message: "Pick a Station",
     options,
   });

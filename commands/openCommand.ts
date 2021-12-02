@@ -1,4 +1,4 @@
-import { Command } from "https://deno.land/x/cliffy@v0.20.0/command/mod.ts";
+import { Cliffy } from "../deps.ts";
 import {
   readRecentWaystations,
   readWaystationFromFS,
@@ -8,7 +8,7 @@ import {
 import { stationSelector } from "../components/mod.ts";
 
 export default function openCommand() {
-  return new Command()
+  return new Cliffy.Command()
     .description(
       "Open previous waystation",
     )
