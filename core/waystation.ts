@@ -264,3 +264,14 @@ Waystation.removeResourceByName = (
   waystation = Waystation.replaceMark(waystation, index, updatedMark);
   return waystation;
 };
+
+Waystation.addTag = (waystation: IWaystation, tag: string): IWaystation => {
+  if(!tag) return waystation;
+  return {
+    ...waystation,
+    tags: [
+      ...waystation.tags,
+      tag
+    ]
+  };
+}
