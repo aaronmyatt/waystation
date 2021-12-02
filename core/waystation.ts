@@ -37,7 +37,7 @@ const EmptyResource: IResource = {
   body: "",
 };
 
-export default function Waystation(name?: string): IWaystation {
+export default function Waystation(name = ""): IWaystation {
   const waystation = Object.freeze({
     ...EmptyWaystation,
     name,
