@@ -267,11 +267,14 @@ Waystation.removeResourceByName = (
 
 Waystation.addTag = (waystation: IWaystation, tag: string): IWaystation => {
   if(!tag) return waystation;
-  return {
+  const tags = waystation.tags || [];
+  waystation = {
     ...waystation,
     tags: [
-      ...waystation.tags,
+      ...tags,
       tag
     ]
-  };
+  }
+  _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation });
+  return waystation;
 }
