@@ -3,5 +3,13 @@ import markCommand from "./markCommand.ts";
 import newCommand from "./newCommand.ts";
 import walkCommand from "./walkCommand.ts";
 import openCommand from "./openCommand.ts";
+import tagCommand from "./tagCommand.ts";
 
-export { listCommand, markCommand, newCommand, openCommand, walkCommand };
+export {
+  listCommand,
+  markCommand,
+  newCommand,
+  openCommand,
+  tagCommand,
+  walkCommand,
+};
