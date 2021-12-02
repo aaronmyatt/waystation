@@ -12,6 +12,7 @@ import {
   newCommand,
   openCommand,
   walkCommand,
+  tagCommand,
 } from "./commands/mod.ts";
 
 registerListeners();
@@ -37,5 +38,7 @@ registerListeners();
     .command("w", walkCommand())
     .command("open", openCommand())
     .command("o", openCommand())
+    .command("tag", tagCommand())
+    .command("t", tagCommand())
     .parse(Deno.args);
 })();
