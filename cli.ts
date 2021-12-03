@@ -22,11 +22,16 @@ registerListeners();
     .name("Waystation")
     .version("0.0.1")
     .description('"This is the way" - Mandalorian')
-    .action(async () => {
+    .option("-j, --json", "Output Waystation JSON representation")
+    .action(async (options: Record<string, unknown>) => {
       const waystation = await readWaystation();
-      const table = renderWaystation(waystation);
-      table.render();
-      renderRecentWaystationList().then((table) => table.render());
+      if(options.json){
+        console.dir(waystation);
+      } else {
+        const table = renderWaystation(waystation);
+        table.render();
+        renderRecentWaystationList().then((table) => table.render());
+      }
     })
     .command("new", await newCommand())
     .command("n", await newCommand())
