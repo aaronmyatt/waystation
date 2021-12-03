@@ -15,9 +15,17 @@ const tableTitle = (title: string) => {
   );
 };
 
+const makeTagsRow = (waystation: IWaystation) => {
+  const tags = waystation.tags || [];
+  if(tags){
+    return new Row(new Cell("Tags: " + JSON.stringify(tags)));
+  }
+  return new Row("");
+}
+
 async function renderRecentWaystationList() {
   const recentWaystations = await readRecentWaystations();
-  const stationNames = recentWaystations.map((waystation) => {
+  const stationNames = recentWaystations.map((waystation: IWaystation) => {
     return new Row(new Cell(waystation.name || waystation.id));
   });
   return new Table().body(stationNames);
@@ -27,7 +35,7 @@ function renderWaystation(waystation: IWaystation) {
   return new Table(
     waystation.name && new Row(new Cell("Current Waystation")) || new Row(""),
     tableTitle(waystation.name || "Current Waystation"),
-    new Row(""),
+    makeTagsRow(waystation),
     new Row(new Cell("Marks:")),
     ...waystation.marks.map((mark, index) => {
       return new Row(
