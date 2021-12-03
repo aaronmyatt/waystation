@@ -26,7 +26,10 @@ registerListeners();
     .action(async (options: Record<string, unknown>) => {
       const waystation = await readWaystation();
       if(options.json){
-        console.dir(waystation);
+        console.dir({
+          ...waystation,
+          marks: [`${waystation.marks.length} marks ommitted`]
+        });
       } else {
         const table = renderWaystation(waystation);
         table.render();
