@@ -35,7 +35,9 @@ async function renderMarkWalk(
     console.log(
       ` edit:${Cliffy.Colors.bold("e")}  up:${Cliffy.Colors.bold("p")}  down:${
         Cliffy.Colors.bold("n")
-      }  next:${Cliffy.Colors.bold("space")} `,
+      }  next:${Cliffy.Colors.bold("space")}  prev:${
+        Cliffy.Colors.bold("backspace")
+      } `,
     );
     mark.resources && mark.resources.map((resource) => {
       const table = renderResource(resource);
@@ -53,7 +55,7 @@ async function renderMarkWalk(
       continue;
     }
 
-    if (press.key === "e") {
+    if (press.key === "e" || press.key === "enter") {
       waystation = await markEditor(waystation, mark);
       continue;
     }
@@ -70,10 +72,23 @@ async function renderMarkWalk(
       continue;
     }
 
-    if (index < waystation.marks.length - 1) {
-      index++;
-    } else {
-      index = 0;
+    if (
+      (press.shiftKey && press.key === "space") ||
+      (press.shiftKey && press.key === "tab") || (press.key === "backspace")
+    ) {
+      if (index > 0) {
+        index--;
+      } else {
+        index = waystation.marks.length - 1;
+      }
+      continue;
+    }
+    if (press.key === "space" || press.key === "tab") {
+      if (index < waystation.marks.length - 1) {
+        index++;
+      } else {
+        index = 0;
+      }
     }
   }
 }
