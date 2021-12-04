@@ -1,9 +1,14 @@
 import { Cliffy } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
+import { events } from "../core/constants.ts";
 import { readRecentWaystations } from "../utils/mod.ts";
 import markComponents from "./mark.ts";
 
 const { Table, Row, Cell } = Cliffy;
+
+const _dispatchCustomEvent = (eventName: string, payload: unknown) => {
+  dispatchEvent(new CustomEvent(eventName, { detail: payload }));
+};
 
 const EDITOR = Deno.env.get("EDITOR") || "nano";
 
@@ -17,11 +22,11 @@ const tableTitle = (title: string) => {
 
 const makeTagsRow = (waystation: IWaystation) => {
   const tags = waystation.tags || [];
-  if(tags){
+  if (tags) {
     return new Row(new Cell("Tags: " + JSON.stringify(tags)));
   }
   return new Row("");
-}
+};
 
 async function renderRecentWaystationList() {
   const recentWaystations = await readRecentWaystations();
@@ -111,19 +116,7 @@ async function markEditor(
   mark: IMark,
 ): Promise<IWaystation> {
   const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
-  const forbiddenKeys = ["id", "resources"];
-
-  const property = await Cliffy.Select.prompt({
-    message: "Pick a property",
-    search: true,
-    options: Object.keys(mark)
-      .filter((key) => !forbiddenKeys.includes(key.toLowerCase()))
-      .map((key) => {
-        return { name: key, value: key };
-      }),
-  }) as "name" | "body" | "path" | "line" | "column";
-
-  await Deno.writeTextFile(TEMP_FILE, String(mark[property]));
+  await Deno.writeTextFile(TEMP_FILE, JSON.stringify(mark, null, "  "));
 
   const editorProcess = Deno.run({
     cmd: [EDITOR, "--wait", TEMP_FILE],
@@ -131,9 +124,69 @@ async function markEditor(
 
   await editorProcess.status();
 
-  const change = await Deno.readTextFile(TEMP_FILE).then((text) => text.trim());
+  const newMark = await Deno.readTextFile(TEMP_FILE)
+    .then((text) => text.trim())
+    .then(JSON.parse);
+
+  const keysMatch = function (set, subset) {
+    for (const elem of subset) {
+      if (!set.has(elem)) {
+        return false;
+      }
+    }
+    return true;
+  }(new Set(Object.keys(mark)), new Set(Object.keys(newMark)));
+
+  if (!keysMatch) throw ("Do not edit object keys");
+
   Deno.remove(TEMP_FILE);
-  return Waystation.editMark(waystation, mark, property, change);
+  const markIndex = waystation.marks.findIndex((oldMark) =>
+    oldMark.id === mark.id
+  );
+  return Waystation.replaceMark(waystation, markIndex, newMark);
+}
+
+async function waystationEditor(
+  waystation: IWaystation,
+): Promise<IWaystation> {
+  const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
+  await Deno.writeTextFile(TEMP_FILE, JSON.stringify({
+    ...waystation,
+    marks: [
+      "#DO NOT EDIT",
+      ...waystation.marks.map(mark => mark.name || mark.id)
+    ]
+  }, null, "  "));
+
+  const editorProcess = Deno.run({
+    cmd: [EDITOR, "--wait", TEMP_FILE],
+  });
+
+  await editorProcess.status();
+
+  const newWaystation = await Deno.readTextFile(TEMP_FILE)
+    .then((text) => text.trim())
+    .then(JSON.parse)
+    .then(newWaystation => {
+      // ensure marks are unedited
+      newWaystation.marks = waystation.marks;
+      return newWaystation;
+    })
+
+  const keysMatch = function (set, subset) {
+    for (const elem of subset) {
+      if (!set.has(elem)) {
+        return false;
+      }
+    }
+    return true;
+  }(new Set(Object.keys(newWaystation)), new Set(Object.keys(waystation)));
+
+  if (!keysMatch) throw ("Do not edit object keys");
+
+  Deno.remove(TEMP_FILE);
+  _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation: newWaystation })  
+  return newWaystation;
 }
 
 async function markPathEditor(mark: IMark): Promise<void> {
@@ -192,4 +245,5 @@ export {
   renderResource,
   renderWaystation,
   stationSelector,
+  waystationEditor,
 };
