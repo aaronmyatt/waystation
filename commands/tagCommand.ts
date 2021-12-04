@@ -11,9 +11,10 @@ export default function tagCommand() {
       let waystation = await readWaystation();
       if (tag) {
         waystation = Waystation.addTag(waystation, tag);
-      } else {
-        waystation.marks = [];
-        console.dir(waystation);
       }
+      console.dir({
+        "name": waystation.name || waystation.id,
+        "tags": waystation.tags
+      });
     });
 }
