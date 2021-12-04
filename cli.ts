@@ -1,9 +1,5 @@
 import { Cliffy } from "./deps.ts";
-import { readWaystationFromFS as readWaystation } from "./utils/mod.ts";
-import {
-  renderRecentWaystationList,
-  renderWaystation,
-} from "./components/mod.ts";
+import { readRecentWaystations, readWaystationFromFS as readWaystation } from "./utils/mod.ts";
 import registerListeners from "./listeners/mod.ts";
 
 import {
@@ -26,14 +22,16 @@ registerListeners();
     .action(async (options: Record<string, unknown>) => {
       const waystation = await readWaystation();
       if(options.json){
+        console.log(JSON.stringify(waystation));
+      } else {
         console.dir({
           ...waystation,
-          marks: [`${waystation.marks.length} marks ommitted`]
+          marks: waystation.marks.map(mark => mark.name || mark.id)
         });
-      } else {
-        const table = renderWaystation(waystation);
-        table.render();
-        renderRecentWaystationList().then((table) => table.render());
+        const recentWaystations = await readRecentWaystations();
+        console.dir({
+          "Recent Stations": recentWaystations.map(station => station.name || station.id)
+        })
       }
     })
     .command("new", await newCommand())
