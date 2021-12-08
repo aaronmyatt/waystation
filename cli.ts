@@ -1,15 +1,18 @@
 import { Cliffy } from "./deps.ts";
-import { readRecentWaystations, readWaystationFromFS as readWaystation } from "./utils/mod.ts";
+import {
+  readRecentWaystations,
+  readWaystationFromFS as readWaystation,
+} from "./utils/mod.ts";
 import registerListeners from "./listeners/mod.ts";
 
 import {
+  editCommand,
   listCommand,
   markCommand,
   newCommand,
   openCommand,
   tagCommand,
   walkCommand,
-  editCommand
 } from "./commands/mod.ts";
 
 registerListeners();
@@ -22,17 +25,19 @@ registerListeners();
     .option("-j, --json", "Output Waystation JSON representation")
     .action(async (options: Record<string, unknown>) => {
       const waystation = await readWaystation();
-      if(options.json){
+      if (options.json) {
         console.log(JSON.stringify(waystation));
       } else {
         console.dir({
           ...waystation,
-          marks: waystation.marks.map(mark => mark.name || mark.id)
+          marks: waystation.marks.map((mark) => mark.name || mark.id),
         });
-        const recentWaystations = await readRecentWaystations();
+        const recentWaystations = await readRecentWaystations(5);
         console.dir({
-          "Recent Stations": recentWaystations.map(station => station.name || station.id)
-        })
+          "Recent Stations": recentWaystations.map((station) =>
+            station.name || station.id
+          ),
+        });
       }
     })
     .command("new", await newCommand())
