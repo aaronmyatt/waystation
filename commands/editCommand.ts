@@ -9,8 +9,8 @@ export default function editCommand() {
     .action(async (_optons, markIndex: number) => {
       let waystation = await readWaystation();
       console.log({
-        markIndex
-      })
+        markIndex,
+      });
       if (Number(markIndex) >= 0) {
         await markEditor(waystation, waystation.marks[markIndex]);
       } else {

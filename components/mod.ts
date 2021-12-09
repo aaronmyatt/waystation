@@ -150,13 +150,20 @@ async function waystationEditor(
   waystation: IWaystation,
 ): Promise<IWaystation> {
   const TEMP_FILE = `/tmp/waystation-${Date.now()}`;
-  await Deno.writeTextFile(TEMP_FILE, JSON.stringify({
-    ...waystation,
-    marks: [
-      "#DO NOT EDIT",
-      ...waystation.marks.map(mark => mark.name || mark.id)
-    ]
-  }, null, "  "));
+  await Deno.writeTextFile(
+    TEMP_FILE,
+    JSON.stringify(
+      {
+        ...waystation,
+        marks: [
+          "#DO NOT EDIT",
+          ...waystation.marks.map((mark) => mark.name || mark.id),
+        ],
+      },
+      null,
+      "  ",
+    ),
+  );
 
   const editorProcess = Deno.run({
     cmd: [EDITOR, "--wait", TEMP_FILE],
@@ -167,11 +174,11 @@ async function waystationEditor(
   const newWaystation = await Deno.readTextFile(TEMP_FILE)
     .then((text) => text.trim())
     .then(JSON.parse)
-    .then(newWaystation => {
+    .then((newWaystation) => {
       // ensure marks are unedited
       newWaystation.marks = waystation.marks;
       return newWaystation;
-    })
+    });
 
   const keysMatch = function (set, subset) {
     for (const elem of subset) {
@@ -185,7 +192,7 @@ async function waystationEditor(
   if (!keysMatch) throw ("Do not edit object keys");
 
   Deno.remove(TEMP_FILE);
-  _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation: newWaystation })  
+  _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation: newWaystation });
   return newWaystation;
 }
 

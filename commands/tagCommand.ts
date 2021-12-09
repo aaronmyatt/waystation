@@ -14,7 +14,7 @@ export default function tagCommand() {
       }
       console.dir({
         "name": waystation.name || waystation.id,
-        "tags": waystation.tags
+        "tags": waystation.tags,
       });
     });
 }

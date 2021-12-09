@@ -7,11 +7,11 @@ import tagCommand from "./tagCommand.ts";
 import editCommand from "./editCommand.ts";
 
 export {
+  editCommand,
   listCommand,
   markCommand,
   newCommand,
   openCommand,
   tagCommand,
   walkCommand,
-  editCommand,
 };
