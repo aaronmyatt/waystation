@@ -5,21 +5,27 @@ const USER_OS_HOME = Deno.env.get("HOME");
 const WAYSTATION_CONFIG_DIRECTORY = `${USER_OS_HOME}/.waystation`;
 const CURRENT_FILE_PATH = `${WAYSTATION_CONFIG_DIRECTORY}/current.json`;
 
+const _isGitRepo = async () => {
+  // if not run at the top level of a git project
+  // we bail early.
+  try {
+    await Deno.lstat(".git");
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 async function projectFiles() {
   const files = [];
-  try {
-    // if not run at the top level of a git project
-    // we bail early.
-    await Deno.lstat(".git");
+  if (await _isGitRepo()) {
     for await (
       const entry of stdLib.Walk(".", { includeDirs: false, skip: [/git/] })
     ) {
       files.push(entry);
     }
-    return files;
-  } catch {
-    return files;
   }
+  return files;
 }
 
 async function* configFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
