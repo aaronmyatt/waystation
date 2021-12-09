@@ -226,7 +226,7 @@ function renderResource(resource: IResource) {
 
 async function stationSelector(waystations: IWaystation[]) {
   const options = waystations.map((station) => {
-    return { name: station.name, value: station.id };
+    return { name: station.name || station.id, value: station.id };
   });
 
   const userSelectedStationId: string = await Cliffy.Select.prompt({

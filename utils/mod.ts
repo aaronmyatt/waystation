@@ -16,6 +16,16 @@ const _isGitRepo = async () => {
   }
 };
 
+async function associateWaystationToProject(waystation: IWaystation) {
+  if (await _isGitRepo()) {
+    Deno.writeTextFile(
+      stdLib.Path.join(Deno.cwd(), `.waystation`),
+      waystation.id,
+      { append: true },
+    );
+  }
+}
+
 async function projectFiles() {
   const files = [];
   if (await _isGitRepo()) {
@@ -175,6 +185,7 @@ async function pathContext(
 }
 
 export {
+  associateWaystationToProject,
   pathContext,
   projectFiles,
   readRecentWaystations,

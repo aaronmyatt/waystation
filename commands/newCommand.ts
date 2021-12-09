@@ -2,6 +2,7 @@ import { Cliffy } from "../deps.ts";
 
 import Waystation from "../core/waystation.ts";
 import {
+  associateWaystationToProject,
   readWaystationFromFS as readWaystation,
   writeBackupToFS,
   writeCurrentToFS,
@@ -19,5 +20,6 @@ export default async function newCommand() {
       waystation = Waystation(name);
       console.dir(waystation);
       writeCurrentToFS(waystation);
+      associateWaystationToProject(waystation);
     });
 }
