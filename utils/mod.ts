@@ -20,7 +20,8 @@ async function associateWaystationToProject(waystation: IWaystation) {
   if (await _isGitRepo()) {
     Deno.writeTextFile(
       stdLib.Path.join(Deno.cwd(), `.waystation`),
-      waystation.id,
+      `${waystation.id}
+`,
       { append: true },
     );
   }
