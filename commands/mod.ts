@@ -5,9 +5,11 @@ import walkCommand from "./walkCommand.ts";
 import openCommand from "./openCommand.ts";
 import tagCommand from "./tagCommand.ts";
 import editCommand from "./editCommand.ts";
+import exportCommand from "./exportCommand.ts";
 
 export {
   editCommand,
+  exportCommand,
   listCommand,
   markCommand,
   newCommand,
