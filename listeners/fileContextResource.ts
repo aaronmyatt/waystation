@@ -1,5 +1,5 @@
-import Waystation from "./core/waystation.ts";
-import { pathContext } from "./utils/mod.ts";
+import Waystation from "../core/waystation.ts";
+import { pathContext } from "../utils/mod.ts";
 
 export default async function fileContextResource(
   waystation: IWaystation,
