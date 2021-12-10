@@ -2,7 +2,7 @@ import { stdLib } from "../deps.ts";
 import Waystation from "../core/waystation.ts";
 import { events } from "../core/constants.ts";
 import { writeBackupToFS, writeCurrentToFS } from "../utils/mod.ts";
-import fileContextResource from "../fileContextResource.ts";
+import fileContextResource from "./fileContextResource.ts";
 
 const _fullPath = (filename: string) => stdLib.Path.join(Deno.cwd(), filename);
 
