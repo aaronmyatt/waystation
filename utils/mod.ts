@@ -48,6 +48,7 @@ async function* configFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
 async function* backupFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
   for await (const dirEntry of configFiles(dirPath)) {
     if (dirEntry.name.includes("current")) continue;
+    if (dirEntry.isDirectory) continue;
     yield dirEntry;
   }
 }
