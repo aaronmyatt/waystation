@@ -7,6 +7,7 @@ import registerListeners from "./listeners/mod.ts";
 
 import {
   editCommand,
+  exportCommand,
   listCommand,
   markCommand,
   newCommand,
@@ -54,5 +55,6 @@ registerListeners();
     .command("t", tagCommand())
     .command("edit", editCommand())
     .command("e", editCommand())
+    .command("export", exportCommand())
     .parse(Deno.args);
 })();
