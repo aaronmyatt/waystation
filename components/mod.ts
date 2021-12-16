@@ -143,7 +143,12 @@ async function markEditor(
   const markIndex = waystation.marks.findIndex((oldMark) =>
     oldMark.id === mark.id
   );
-  return Waystation.replaceMark(waystation, markIndex, newMark);
+  const newWaystation = Waystation.replaceMark(waystation, markIndex, newMark);
+  _dispatchCustomEvent(events.EDIT_MARK, {
+    waystation: newWaystation,
+    mark: newMark,
+  });
+  return newWaystation;
 }
 
 async function waystationEditor(
