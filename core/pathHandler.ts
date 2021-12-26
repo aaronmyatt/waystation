@@ -1,5 +1,5 @@
 const FILE_PATH_REGEX =
-  /(?<path>(?:\w|\/|\.)*):(?<line>\d+)(?::(?<column>\d+))?(?::(?<snippet>.*))?/;
+  /(?<path>(?:\w|\/|\.|-)*):(?<line>\d+)(?::(?<column>\d+))?(?::(?<snippet>.*))?/;
 
 export default function pathHandler(pathInput: string) {
   let [name, body, path, line, column] = [pathInput, "", "", 0, 0];
