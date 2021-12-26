@@ -40,7 +40,7 @@ Deno.test("basic path returns as name|body|path", () => {
 
 Deno.test("path with line returns updates line with correct value", () => {
   const result = pathHandler(PATH_WITH_LINE);
-  assertEquals(result.name, PATH_WITH_LINE);
+  assertEquals(result.name, BASIC_PATH);
   assertEquals(result.body, BASIC_PATH);
   assertStringIncludes(result.path, BASIC_PATH);
   assertEquals(result.line, 123);
@@ -49,7 +49,7 @@ Deno.test("path with line returns updates line with correct value", () => {
 
 Deno.test("path with line&col updates line&col with correct value", () => {
   const result = pathHandler(PATH_WITH_LINE_AND_COLUMN);
-  assertEquals(result.name, PATH_WITH_LINE_AND_COLUMN);
+  assertEquals(result.name, BASIC_PATH);
   assertEquals(result.body, BASIC_PATH);
   assertStringIncludes(result.path, BASIC_PATH);
   assertEquals(result.line, 123);
@@ -58,7 +58,7 @@ Deno.test("path with line&col updates line&col with correct value", () => {
 
 Deno.test("grep like output updates body&name with snippet", () => {
   const result = pathHandler(GREP_MATCH_PATH);
-  assertEquals(result.name, GREP_MATCH_PATH);
+  assertEquals(result.name, BASIC_PATH);
   assertEquals(result.body, " someMatchingLine(){");
   assertStringIncludes(result.path, BASIC_PATH);
   assertEquals(result.line, 123);
@@ -72,7 +72,7 @@ Deno.test("malformed input returns as name|body|path", () => {
   assertEquals(result.path, MALFORMED_INPUT_1);
 
   const result2 = pathHandler(MALFORMED_INPUT_2);
-  assertEquals(result2.name, MALFORMED_INPUT_2);
+  assertEquals(result2.name, BASIC_PATH);
   assertEquals(result2.body, BASIC_PATH);
   assertStringIncludes(result2.path, BASIC_PATH);
 });
