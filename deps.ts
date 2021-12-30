@@ -2,6 +2,7 @@
 import * as Path from "https://deno.land/std@0.113.0/path/mod.ts";
 import { readLines as ReadLines } from "https://deno.land/std@0.113.0/io/mod.ts";
 import { walk as Walk } from "https://deno.land/std@0.115.1/fs/mod.ts";
+import { z } from "https://deno.land/x/zod@v3.11.6/mod.ts";
 
 // Cliffy: https://deno.land/x/cliffy
 import {
@@ -40,4 +41,8 @@ export const stdLib = {
   Path,
   ReadLines,
   Walk,
+};
+
+export const zod = {
+  z,
 };

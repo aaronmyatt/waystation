@@ -2,6 +2,9 @@
 
 import { events } from "./constants.ts";
 import pathHandler from "./pathHandler.ts";
+import { zod } from "../deps.ts";
+
+const { z } = zod;
 
 const _generateUniqueId = () => crypto.randomUUID();
 const _dispatchCustomEvent = (eventName: string, payload: unknown) => {
@@ -10,40 +13,68 @@ const _dispatchCustomEvent = (eventName: string, payload: unknown) => {
 
 const DEFAULT_DIR = "~/.waystation/";
 
-export const EmptyWaystation: IWaystation = {
+export const EmptyWaystation = {
   id: "",
   name: "",
-  marks: Object.freeze([]),
+  marks: [],
   configuration: {
     directory: DEFAULT_DIR,
   },
   tags: [],
 };
 
-export const EmptyMark: IMark = {
+export const EmptyMark = {
   id: "",
   name: "",
   body: "",
   path: "",
   line: 0,
   column: 0,
-  resources: Object.freeze([]),
+  resources: [],
 };
 
-const EmptyResource: IResource = {
+const EmptyResource = {
   type: "mark",
   id: "",
   name: "",
   body: "",
 };
 
+const resourceSchema = z.object({
+  type: z.enum(["mark", "note"]),
+  id: z.string(),
+  name: z.string(),
+  body: z.string(),
+});
+
+const markSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  body: z.string(),
+  path: z.string(),
+  line: z.number().default(0),
+  column: z.number().default(0),
+  resources: z.array(resourceSchema),
+});
+
+const waystationSchema = z.object({
+  id: z.string().default(_generateUniqueId),
+  name: z.string(),
+  marks: z.array(markSchema),
+  configuration: z.object({
+    directory: z.string().default(DEFAULT_DIR),
+  }),
+  tags: z.array(z.string()),
+});
+
 export default function Waystation(name = ""): IWaystation {
-  const waystation = Object.freeze({
+  const waystation = {
     ...EmptyWaystation,
     name,
     id: _generateUniqueId(),
-  });
-  return waystation;
+  };
+
+  return waystationSchema.parse(waystation);
 }
 
 Waystation.addMark = (waystation: IWaystation, mark: IMark): IWaystation => {
@@ -52,16 +83,16 @@ Waystation.addMark = (waystation: IWaystation, mark: IMark): IWaystation => {
     ...waystation,
     marks,
   };
-  return newWaystation;
+  return waystationSchema.parse(newWaystation);
 };
 
 Waystation.makeMark = (path: string): IMark => {
   const id = _generateUniqueId();
-  return {
+  return markSchema.parse({
     ...EmptyMark,
     id,
     ...pathHandler(path),
-  };
+  });
 };
 
 Waystation.newMark = (waystation: IWaystation, path: string): IWaystation => {
@@ -76,7 +107,7 @@ Waystation.replaceMark = (
   index: number,
   newMark: IMark,
 ): IWaystation => {
-  return {
+  return waystationSchema.parse({
     ...waystation,
     marks: waystation.marks.map((mark, markIndex) => {
       if (markIndex === index) {
@@ -84,7 +115,7 @@ Waystation.replaceMark = (
       }
       return mark;
     }),
-  };
+  });
 };
 
 Waystation.editMark = (
@@ -151,10 +182,10 @@ Waystation.reorderMarks = (
     [],
   );
 
-  const newWaystation = {
+  const newWaystation = waystationSchema.parse({
     ...waystation,
     marks,
-  };
+  });
 
   _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation: newWaystation });
   return newWaystation;
@@ -190,10 +221,10 @@ Waystation.removeMarkByIndex = (
     return index !== markIndex;
   });
 
-  waystation = {
+  waystation = waystationSchema.parse({
     ...waystation,
     marks,
-  };
+  });
 
   _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation });
   return waystation;
@@ -214,13 +245,13 @@ Waystation.lastMark = (waystation: IWaystation): IMark | undefined => {
 };
 
 function makeResource(type: ResourceTypes, body: string, name = ""): IResource {
-  return {
+  return resourceSchema.parse({
     ...EmptyResource,
     id: _generateUniqueId(),
     type,
     name,
     body,
-  };
+  });
 }
 
 Waystation.newResource = (
@@ -234,13 +265,13 @@ Waystation.newResource = (
   const oldMark = waystation.marks.find((oldMark) => oldMark.id === mark.id);
   if (!oldMark) return waystation;
 
-  const updatedMark = {
+  const updatedMark = markSchema.parse({
     ...oldMark,
     resources: [
       ...oldMark?.resources || [],
       resource,
     ],
-  };
+  });
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   waystation = Waystation.replaceMark(waystation, index, updatedMark);
   _dispatchCustomEvent(events.NEW_RESOURCE, { waystation, resource });
@@ -255,11 +286,13 @@ Waystation.removeResourceByName = (
   const oldMark = waystation.marks.find((oldMark) => oldMark.id === mark.id);
   if (oldMark === undefined) return waystation;
 
-  const updatedMark = {
+  const updatedMark = markSchema.parse({
     ...oldMark,
-    resources:
-      oldMark.resources?.filter((resource) => resource.name !== name) || [],
-  };
+    resources: oldMark.resources?.filter((resource) =>
+      resource.name !== name
+    ) || [],
+  });
+
   const index = waystation.marks.findIndex((oldMark) => oldMark.id === mark.id);
   waystation = Waystation.replaceMark(waystation, index, updatedMark);
   return waystation;
@@ -268,13 +301,13 @@ Waystation.removeResourceByName = (
 Waystation.addTag = (waystation: IWaystation, tag: string): IWaystation => {
   if (!tag) return waystation;
   const tags = waystation.tags || [];
-  waystation = {
+  waystation = waystationSchema.parse({
     ...waystation,
     tags: [
       ...tags,
       tag,
     ],
-  };
+  });
   _dispatchCustomEvent(events.EDIT_WAYSTATION, { waystation });
   return waystation;
 };
