@@ -13,6 +13,7 @@ import {
   newCommand,
   openCommand,
   tagCommand,
+  validateCommand,
   walkCommand,
 } from "./commands/mod.ts";
 
@@ -55,6 +56,7 @@ registerListeners();
     .command("t", tagCommand())
     .command("edit", editCommand())
     .command("e", editCommand())
+    .command("validate", validateCommand())
     .command("export", exportCommand())
     .parse(Deno.args);
 })();

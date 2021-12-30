@@ -6,6 +6,7 @@ import openCommand from "./openCommand.ts";
 import tagCommand from "./tagCommand.ts";
 import editCommand from "./editCommand.ts";
 import exportCommand from "./exportCommand.ts";
+import validateCommand from "./validateCommand.ts";
 
 export {
   editCommand,
@@ -15,5 +16,6 @@ export {
   newCommand,
   openCommand,
   tagCommand,
+  validateCommand,
   walkCommand,
 };

@@ -57,7 +57,7 @@ const markSchema = z.object({
   resources: z.array(resourceSchema),
 });
 
-const waystationSchema = z.object({
+export const waystationSchema = z.object({
   id: z.string().default(_generateUniqueId),
   name: z.string(),
   marks: z.array(markSchema),
