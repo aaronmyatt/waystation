@@ -29,7 +29,7 @@ const makeTagsRow = (waystation: IWaystation) => {
 };
 
 async function renderRecentWaystationList() {
-  const recentWaystations = await readRecentWaystations();
+  const recentWaystations = await readRecentWaystations(5);
   const stationNames = recentWaystations.map((waystation: IWaystation) => {
     return new Row(new Cell(waystation.name || waystation.id));
   });
@@ -235,7 +235,7 @@ async function stationSelector(waystations: IWaystation[]) {
   });
 
   const userSelectedStationId: string = await Cliffy.Select.prompt({
-    message: "Pick a Station",
+    message: `Pick a Station (${waystations.length})`,
     options,
   });
 

@@ -55,7 +55,7 @@ async function* backupFiles(dirPath = WAYSTATION_CONFIG_DIRECTORY) {
 
 async function recentlyEditedBackupFiles(
   dirPath = WAYSTATION_CONFIG_DIRECTORY,
-  count = 10,
+  count: number | undefined,
 ) {
   const backupFilesArray = [];
   for await (const backupFile of backupFiles(dirPath)) {
@@ -92,7 +92,9 @@ async function recentlyEditedBackupFiles(
   return rawRecentFiles.map((rawFile: string) => rawFile);
 }
 
-async function readRecentWaystations(count = 10): Promise<IWaystation[]> {
+async function readRecentWaystations(
+  count: number | undefined,
+): Promise<IWaystation[]> {
   try {
     const rawWaystations = await recentlyEditedBackupFiles(
       WAYSTATION_CONFIG_DIRECTORY,
