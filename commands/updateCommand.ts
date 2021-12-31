@@ -2,7 +2,7 @@ import { Cliffy } from "../deps.ts";
 import { waystationSchema } from "../core/waystation.ts";
 import { writeBackupToFS, writeCurrentToFS } from "../utils/mod.ts";
 
-export default function exportCommand() {
+export default function updateCommand() {
   return new Cliffy.Command()
     // .arguments()
     .description("Update current Waystation from stdin")
@@ -13,7 +13,7 @@ export default function exportCommand() {
         const validated = waystationSchema.parse(waystation);
         await writeBackupToFS(validated);
         writeCurrentToFS(validated);
-        console.dir(validated);
+        console.log(JSON.stringify(validated));
       } catch (e) {
         if (e.name === "SyntaxError") {
           console.error("Invalid JSON");
