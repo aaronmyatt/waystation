@@ -12,14 +12,29 @@ export default function openCommand() {
     .description(
       "Open previous waystation",
     )
-    .action(async () => {
-      const waystation = await readWaystationFromFS();
+    .option(
+      "-j, --json",
+      "output raw list of available waystations and their ids",
+    )
+    .action(async (options: Record<string, unknown>) => {
       const backups = await readRecentWaystations(undefined);
-      const newWaystation = await stationSelector(backups);
-      if (newWaystation) {
-        writeCurrentToFS(newWaystation);
-        console.log("Updated current Waystation");
+      if (options.json) {
+        const stationList = backups.map((station) => {
+          const { name, id } = station;
+          return {
+            id,
+            name,
+          };
+        });
+        console.log(JSON.stringify(stationList, null, "  "));
+      } else {
+        const waystation = await readWaystationFromFS();
+        const newWaystation = await stationSelector(backups);
+        if (newWaystation) {
+          writeCurrentToFS(newWaystation);
+          console.log("Updated current Waystation");
+        }
+        writeBackupToFS(waystation);
       }
-      writeBackupToFS(waystation);
     });
 }
