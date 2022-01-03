@@ -229,12 +229,12 @@ function renderResource(resource: IResource) {
   );
 }
 
-async function stationSelector(waystations: IWaystation[]) {
+async function stationSelector(waystations: IWaystation[], uid?: string) {
   const options = waystations.map((station) => {
     return { name: station.name || station.id, value: station.id };
   });
 
-  const userSelectedStationId: string = await Cliffy.Select.prompt({
+  const userSelectedStationId: string = uid || await Cliffy.Select.prompt({
     message: `Pick a Station (${waystations.length})`,
     options,
   });

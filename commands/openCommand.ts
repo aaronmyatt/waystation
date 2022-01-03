@@ -12,11 +12,12 @@ export default function openCommand() {
     .description(
       "Open previous waystation",
     )
+    .arguments("[uid:string]")
     .option(
       "-j, --json",
       "output raw list of available waystations and their ids",
     )
-    .action(async (options: Record<string, unknown>) => {
+    .action(async (options: Record<string, unknown>, uid?: string) => {
       const backups = await readRecentWaystations(undefined);
       if (options.json) {
         const stationList = backups.map((station) => {
@@ -29,11 +30,13 @@ export default function openCommand() {
         console.log(JSON.stringify(stationList, null, "  "));
       } else {
         const waystation = await readWaystationFromFS();
-        const newWaystation = await stationSelector(backups);
+        const newWaystation = await stationSelector(backups, uid);
+
         if (newWaystation) {
           writeCurrentToFS(newWaystation);
           console.log("Updated current Waystation");
         }
+
         writeBackupToFS(waystation);
       }
     });
