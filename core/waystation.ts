@@ -16,6 +16,7 @@ const DEFAULT_DIR = "~/.waystation/";
 export const EmptyWaystation = {
   id: "",
   name: "",
+  body: "",
   marks: [],
   configuration: {
     directory: DEFAULT_DIR,
@@ -60,6 +61,7 @@ const markSchema = z.object({
 export const waystationSchema = z.object({
   id: z.string().default(_generateUniqueId),
   name: z.string(),
+  body: z.string().optional(),
   marks: z.array(markSchema),
   configuration: z.object({
     directory: z.string().default(DEFAULT_DIR),
