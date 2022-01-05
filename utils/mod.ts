@@ -114,12 +114,40 @@ async function readRecentWaystations(
   }
 }
 
-async function readWaystationFromFS(): Promise<IWaystation> {
+async function readWaystationFromFS(uid?: string): Promise<IWaystation> {
+  let waystationPath = CURRENT_FILE_PATH;
+  if (uid) {
+    waystationPath = `${WAYSTATION_CONFIG_DIRECTORY}/${uid}`;
+  }
   try {
-    const rawFile = await Deno.readTextFile(CURRENT_FILE_PATH);
+    const rawFile = await Deno.readTextFile(waystationPath);
     return JSON.parse(rawFile);
   } catch {
     return Waystation();
+  }
+}
+
+async function readManyWaystationsFromFS(
+  uids: string[],
+): Promise<IWaystation[]> {
+  return await Promise.all(uids.map((uid) => {
+    return readWaystationFromFS(uid);
+  }));
+}
+
+async function readProjectAssociatedWaystations(): Promise<IWaystation[]> {
+  if (await _isGitRepo()) {
+    const waystations: IWaystation[] = [];
+    const path = "./.waystation";
+    const fileReader = await Deno.open(path);
+
+    for await (const line of stdLib.ReadLines(fileReader)) {
+      const waystation = await readWaystationFromFS(line.trim());
+      waystations.push(waystation);
+    }
+    return waystations;
+  } else {
+    return await readRecentWaystations(undefined);
   }
 }
 
@@ -192,6 +220,8 @@ export {
   associateWaystationToProject,
   pathContext,
   projectFiles,
+  readManyWaystationsFromFS,
+  readProjectAssociatedWaystations,
   readRecentWaystations,
   readWaystationFromFS,
   writeBackupToFS,

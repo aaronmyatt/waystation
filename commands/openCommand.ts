@@ -1,5 +1,6 @@
 import { Cliffy } from "../deps.ts";
 import {
+  readProjectAssociatedWaystations,
   readRecentWaystations,
   readWaystationFromFS,
   writeBackupToFS,
@@ -17,8 +18,17 @@ export default function openCommand() {
       "-j, --json",
       "output raw list of available waystations and their ids",
     )
+    .option(
+      "-p, --project",
+      "limit output to waystations created within the current (directory) project",
+    )
     .action(async (options: Record<string, unknown>, uid?: string) => {
-      const backups = await readRecentWaystations(undefined);
+      let backups;
+      if (options.project) {
+        backups = await readProjectAssociatedWaystations();
+      } else {
+        backups = await readRecentWaystations(undefined);
+      }
       if (options.json) {
         const stationList = backups.map((station) => {
           const { name, id } = station;
