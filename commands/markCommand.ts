@@ -66,6 +66,34 @@ async function orderMarkCommand() {
     });
 }
 
+async function noteResourceCommand() {
+  const waystation = await readWaystation();
+  return new Cliffy.Command()
+    .arguments("<index:number> <note:string>")
+    .description("Add note resource")
+    .action((_, index, note) => {
+      const mark = waystation.marks[index];
+      if (mark) {
+        const markNotes = mark.resources?.filter((resource) =>
+          resource.type === "note"
+        ) || [];
+        const name = `Note #${markNotes.length + 1 || 1}`;
+        const newWaystation = Waystation.newResource(
+          waystation,
+          mark,
+          "note",
+          note,
+          name,
+        );
+        console.log(`
+${newWaystation.name}
+Mark: ${newWaystation.marks[index].name}
+`);
+        console.dir(newWaystation.marks[index].resources);
+      }
+    });
+}
+
 export default async function markCommand() {
   return new Cliffy.Command()
     .arguments("[path:string] [name:string]")
@@ -74,6 +102,7 @@ export default async function markCommand() {
     )
     .option("-n, --name <name>", "mark name")
     .action(defaultMarkCommand)
+    .command("note", await noteResourceCommand())
     .command("remove", await removeMarkCommand())
     .command("order", await orderMarkCommand());
 }
