@@ -42,7 +42,7 @@ const EmptyResource = {
 };
 
 const resourceSchema = z.object({
-  type: z.enum(["mark", "note"]),
+  type: z.enum(["waystation", "note", "url"]),
   id: z.string(),
   name: z.string(),
   body: z.string(),

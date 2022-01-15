@@ -94,6 +94,79 @@ Mark: ${newWaystation.marks[index].name}
     });
 }
 
+async function stationResourceCommand() {
+  const waystation = await readWaystation();
+  return new Cliffy.Command()
+    .arguments("<index:number> <uuid:string>")
+    .description("Add note resource")
+    .action(async (_, index, uuid) => {
+      const mark = waystation.marks[index];
+      const linkStation = await readWaystation(uuid);
+      if (mark) {
+        const newWaystation = Waystation.newResource(
+          waystation,
+          mark,
+          "waystation",
+          uuid,
+          linkStation.name,
+        );
+        console.log(`
+${newWaystation.name}
+Mark: ${newWaystation.marks[index].name}
+`);
+        console.dir(newWaystation.marks[index].resources);
+      }
+    });
+}
+
+function isValidUrl(url: string): boolean {
+  const protocols = ["http:", "https:"];
+  try {
+    const Url = new URL(url);
+    if (protocols.includes(Url.protocol)) {
+      // protocol valid
+    } else {
+      throw new TypeError(
+        `Incorrect protocol (${Url.protocol}) for url: ${url}`,
+      );
+    }
+  } catch (error) {
+    console.error(error.message);
+    return false;
+  }
+  return true;
+}
+
+async function urlResourceCommand() {
+  const waystation = await readWaystation();
+  return new Cliffy.Command()
+    .arguments("<index:number> <url:string>")
+    .description("Add url resource")
+    .action((_, index, url) => {
+      if (isValidUrl(url)) {
+        const mark = waystation.marks[index];
+        if (mark) {
+          const markUrls = mark.resources?.filter((resource) =>
+            resource.type === "url"
+          ) || [];
+          const name = `Url #${markUrls.length + 1 || 1}`;
+          const newWaystation = Waystation.newResource(
+            waystation,
+            mark,
+            "url",
+            url,
+            name,
+          );
+          console.log(`
+${newWaystation.name}
+Mark: ${newWaystation.marks[index].name}
+`);
+          console.dir(newWaystation.marks[index].resources);
+        }
+      }
+    });
+}
+
 export default async function markCommand() {
   return new Cliffy.Command()
     .arguments("[path:string] [name:string]")
@@ -102,7 +175,9 @@ export default async function markCommand() {
     )
     .option("-n, --name <name>", "mark name")
     .action(defaultMarkCommand)
+    .command("station", await stationResourceCommand())
     .command("note", await noteResourceCommand())
+    .command("url", await urlResourceCommand())
     .command("remove", await removeMarkCommand())
     .command("order", await orderMarkCommand());
 }

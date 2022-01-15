@@ -16,7 +16,7 @@ interface IMark {
   resources?: readonly IResource[];
 }
 
-type ResourceTypes = "url" | "mark" | "note" | "path";
+type ResourceTypes = "url" | "waystation" | "note" | "path";
 
 interface IResource {
   type: ResourceTypes;
