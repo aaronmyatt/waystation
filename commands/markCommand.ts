@@ -4,7 +4,36 @@ import Waystation from "../core/waystation.ts";
 import {
   projectFiles,
   readWaystationFromFS as readWaystation,
+  writeBackupToFS,
+  writeCurrentToFS,
 } from "../utils/mod.ts";
+
+function printNameAndMark(name: string, mark: IMark) {
+  console.log(`
+${name}
+Mark: ${mark.name}
+`);
+  console.dir(mark.resources);
+}
+
+function isValidUrl(url: string): boolean {
+  const protocols = ["http:", "https:"];
+  try {
+    const Url = new URL(url);
+    if (protocols.includes(Url.protocol)) {
+      // protocol valid
+    } else {
+      throw new TypeError(
+        `Incorrect protocol (${Url.protocol}) for url: ${url}`,
+      );
+    }
+  } catch (error) {
+    console.error(error.message);
+    return false;
+  }
+  return true;
+}
+``;
 
 async function defaultMarkCommand(
   options: Record<string, string>,
@@ -69,10 +98,10 @@ async function orderMarkCommand() {
 async function noteResourceCommand() {
   const waystation = await readWaystation();
   return new Cliffy.Command()
-    .arguments("<index:number> <note:string>")
+    .arguments("<index> <note:string>")
     .description("Add note resource")
     .action((_, index, note) => {
-      const mark = waystation.marks[index];
+      const mark = waystation.marks[Number(index)];
       if (mark) {
         const markNotes = mark.resources?.filter((resource) =>
           resource.type === "note"
@@ -85,11 +114,10 @@ async function noteResourceCommand() {
           note,
           name,
         );
-        console.log(`
-${newWaystation.name}
-Mark: ${newWaystation.marks[index].name}
-`);
-        console.dir(newWaystation.marks[index].resources);
+        printNameAndMark(
+          newWaystation.name,
+          newWaystation.marks[Number(index)],
+        );
       }
     });
 }
@@ -97,10 +125,10 @@ Mark: ${newWaystation.marks[index].name}
 async function stationResourceCommand() {
   const waystation = await readWaystation();
   return new Cliffy.Command()
-    .arguments("<index:number> <uuid:string>")
+    .arguments("<index> <uuid:string>")
     .description("Add note resource")
     .action(async (_, index, uuid) => {
-      const mark = waystation.marks[index];
+      const mark = waystation.marks[Number(index)];
       const linkStation = await readWaystation(uuid);
       if (mark) {
         const newWaystation = Waystation.newResource(
@@ -110,41 +138,22 @@ async function stationResourceCommand() {
           uuid,
           linkStation.name,
         );
-        console.log(`
-${newWaystation.name}
-Mark: ${newWaystation.marks[index].name}
-`);
-        console.dir(newWaystation.marks[index].resources);
+        printNameAndMark(
+          newWaystation.name,
+          newWaystation.marks[Number(index)],
+        );
       }
     });
-}
-
-function isValidUrl(url: string): boolean {
-  const protocols = ["http:", "https:"];
-  try {
-    const Url = new URL(url);
-    if (protocols.includes(Url.protocol)) {
-      // protocol valid
-    } else {
-      throw new TypeError(
-        `Incorrect protocol (${Url.protocol}) for url: ${url}`,
-      );
-    }
-  } catch (error) {
-    console.error(error.message);
-    return false;
-  }
-  return true;
 }
 
 async function urlResourceCommand() {
   const waystation = await readWaystation();
   return new Cliffy.Command()
-    .arguments("<index:number> <url:string>")
+    .arguments("<index> <url:string>")
     .description("Add url resource")
     .action((_, index, url) => {
       if (isValidUrl(url)) {
-        const mark = waystation.marks[index];
+        const mark = waystation.marks[Number(index)];
         if (mark) {
           const markUrls = mark.resources?.filter((resource) =>
             resource.type === "url"
@@ -157,12 +166,39 @@ async function urlResourceCommand() {
             url,
             name,
           );
-          console.log(`
-${newWaystation.name}
-Mark: ${newWaystation.marks[index].name}
-`);
-          console.dir(newWaystation.marks[index].resources);
+
+          printNameAndMark(
+            newWaystation.name,
+            newWaystation.marks[Number(index)],
+          );
         }
+      }
+    });
+}
+
+async function subwayResourceCommand() {
+  const waystation = await readWaystation();
+  return new Cliffy.Command().description(
+    "Create a new Waystation associated to this mark",
+  )
+    .option("-o, --open", "Create and Open the Sub-Waystation")
+    .arguments("<index> [name:string]")
+    .action(async (option, index, name = "") => {
+      const mark = waystation.marks[Number(index)];
+      name = name || `From: ${mark.name}:${waystation.id}`;
+      const newWaystation = Waystation(name);
+      await writeBackupToFS(newWaystation);
+      const updatedWaystation = Waystation.newResource(
+        waystation,
+        mark,
+        "waystation",
+        newWaystation.id,
+        name,
+      );
+      printNameAndMark(updatedWaystation.name, updatedWaystation.marks[index]);
+      if (option.open) {
+        await writeCurrentToFS(newWaystation);
+        console.log(`Current Waystation updated to: ${newWaystation.name}`);
       }
     });
 }
@@ -176,6 +212,7 @@ export default async function markCommand() {
     .option("-n, --name <name>", "mark name")
     .action(defaultMarkCommand)
     .command("station", await stationResourceCommand())
+    .command("subway", await subwayResourceCommand())
     .command("note", await noteResourceCommand())
     .command("url", await urlResourceCommand())
     .command("remove", await removeMarkCommand())
