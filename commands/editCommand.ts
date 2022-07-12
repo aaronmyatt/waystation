@@ -6,16 +6,16 @@ export default function editCommand() {
   return new Cliffy.Command()
     .arguments("[markIndex:number]")
     .description("Update current waystation with a tag")
-    .action(async (_optons, markIndex: number) => {
+    .action(async (_optons, markIndex: number|undefined) => {
       let waystation = await readWaystation();
       console.log({
         markIndex,
       });
       if (Number(markIndex) >= 0) {
-        await markEditor(waystation, waystation.marks[markIndex]);
+        await markEditor(waystation, waystation.marks[Number(markIndex)]);
       } else {
         waystation = await waystationEditor(waystation);
         console.dir(waystation);
       }
-    });
+    }).reset();
 }

@@ -37,10 +37,10 @@ function isValidUrl(url: string): boolean {
 
 async function defaultMarkCommand(
   options: Record<string, string>,
-  path: string,
-  name: string,
+  path: string|undefined,
+  name: string|undefined,
 ) {
-  let markName: string = options.name || name;
+  let markName: string|undefined = options.name || name;
   let waystation = await readWaystation();
   if (path) {
     waystation = Waystation.newMark(waystation, path);
@@ -195,7 +195,7 @@ async function subwayResourceCommand() {
         newWaystation.id,
         name,
       );
-      printNameAndMark(updatedWaystation.name, updatedWaystation.marks[index]);
+      printNameAndMark(updatedWaystation.name, updatedWaystation.marks[Number(index)]);
       if (option.open) {
         await writeCurrentToFS(newWaystation);
         console.log(`Current Waystation updated to: ${newWaystation.name}`);
@@ -216,5 +216,6 @@ export default async function markCommand() {
     .command("note", await noteResourceCommand())
     .command("url", await urlResourceCommand())
     .command("remove", await removeMarkCommand())
-    .command("order", await orderMarkCommand());
+    .command("order", await orderMarkCommand())
+    .reset();
 }
