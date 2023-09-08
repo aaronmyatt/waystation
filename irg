@@ -10,6 +10,6 @@ fzf -d : \
 --bind="change:reload:rg --glob="$1" -n --color=always {q}" \
 --bind='enter:execute:micro {1}:{2}:{3}' \
 --bind='ctrl-s:execute:way mark {1}:{2}:{3}' \
---bind='ctrl-w:execute:way list | less' \
---bind='ctrl-f:execute:irg {1} {q}' \
+--bind='ctrl-w:execute:rg "^//.*\[mark\]" | fzf' \
+--bind='ctrl-f:execute:./irg {1} {q}' \
 --preview="[[ -n {1} ]] && $preview"

@@ -20,6 +20,8 @@ import {
 
 registerListeners();
 
+
+// [mark] do something
 (async function () {
   await new Cliffy.Command()
     .name("Waystation")
